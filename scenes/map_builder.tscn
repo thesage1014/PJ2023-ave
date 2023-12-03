@@ -5,6 +5,20 @@
 [ext_resource type="FastNoiseLite" uid="uid://7ga8yhnc2kgd" path="res://graphics/noisebase.tres" id="3_bpcyi"]
 [ext_resource type="Material" uid="uid://dt3c78grio1lj" path="res://graphics/add.tres" id="3_iwryc"]
 
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_uk25g"]
+generate_mipmaps = false
+noise = ExtResource("3_bpcyi")
+
+[sub_resource type="Gradient" id="Gradient_lktm6"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.584416, 0.850649, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.840553, 0.840553, 0.840553, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_puocy"]
+gradient = SubResource("Gradient_lktm6")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_x0y4w"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -25,46 +39,7 @@ viewport_path = NodePath("SubViewport")
 resource_local_to_scene = true
 diffuse_texture = SubResource("ViewportTexture_lkdfq")
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_uk25g"]
-generate_mipmaps = false
-noise = ExtResource("3_bpcyi")
-
-[sub_resource type="Gradient" id="Gradient_lktm6"]
-interpolation_mode = 2
-offsets = PackedFloat32Array(0.584416, 0.850649, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.840553, 0.840553, 0.840553, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_puocy"]
-gradient = SubResource("Gradient_lktm6")
-fill = 2
-fill_from = Vector2(0.5, 0.5)
-
-[node name="MapBuilder" type="Node3D" node_paths=PackedStringArray("noiseViewport", "gridMap")]
-script = ExtResource("1_1vfao")
-noiseViewport = NodePath("SubViewport")
-gridMap = NodePath("GridMap")
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_ypqdy")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
-shadow_enabled = true
-
-[node name="GridMap" type="GridMap" parent="."]
-mesh_library = ExtResource("2_pwytv")
-cell_size = Vector3(1, 1, 1)
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 256, 256, 350)
-visible = false
-
-[node name="Preview" type="TextureRect" parent="."]
-visible = false
-offset_right = 222.0
-offset_bottom = 222.0
-texture = SubResource("CanvasTexture_efq7w")
-expand_mode = 1
+[node name="Node3D" type="Node3D"]
 
 [node name="SubViewport" type="SubViewport" parent="."]
 render_target_clear_mode = 1
@@ -98,3 +73,29 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("GradientTexture2D_puocy")
 expand_mode = 4
+
+[node name="MapBuilder" type="Node3D" parent="." node_paths=PackedStringArray("noiseViewport", "gridMap")]
+script = ExtResource("1_1vfao")
+noiseViewport = NodePath("../SubViewport")
+gridMap = NodePath("GridMap")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="MapBuilder"]
+environment = SubResource("Environment_ypqdy")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="MapBuilder"]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="GridMap" type="GridMap" parent="MapBuilder"]
+mesh_library = ExtResource("2_pwytv")
+cell_size = Vector3(1, 1, 1)
+
+[node name="Camera3D" type="Camera3D" parent="MapBuilder"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 256, 256, 350)
+current = true
+
+[node name="Preview" type="TextureRect" parent="MapBuilder"]
+offset_right = 222.0
+offset_bottom = 222.0
+texture = SubResource("CanvasTexture_efq7w")
+expand_mode = 1

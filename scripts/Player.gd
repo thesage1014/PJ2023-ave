@@ -5,7 +5,7 @@ extends CharacterBody3D
 @export var JUMP_VELOCITY = 30
 @export var fly_amount = 0 # 1 means fully flying
 @export var drag = .98
-var gravity = 25
+var gravity = 30
 
 
 func _physics_process(delta):
