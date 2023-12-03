@@ -1,0 +1,100 @@
+[gd_scene load_steps=13 format=3 uid="uid://cc24ri8n7xvoc"]
+
+[ext_resource type="Script" path="res://scripts/MapBuilder.gd" id="1_1vfao"]
+[ext_resource type="MeshLibrary" uid="uid://ftt25vrnopyd" path="res://models/gridMapTiles.tres" id="2_pwytv"]
+[ext_resource type="FastNoiseLite" uid="uid://7ga8yhnc2kgd" path="res://graphics/noisebase.tres" id="3_bpcyi"]
+[ext_resource type="Material" uid="uid://dt3c78grio1lj" path="res://graphics/add.tres" id="3_iwryc"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_x0y4w"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_kjhyb"]
+sky_material = SubResource("ProceduralSkyMaterial_x0y4w")
+
+[sub_resource type="Environment" id="Environment_ypqdy"]
+background_mode = 2
+sky = SubResource("Sky_kjhyb")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_lkdfq"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_efq7w"]
+resource_local_to_scene = true
+diffuse_texture = SubResource("ViewportTexture_lkdfq")
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_uk25g"]
+generate_mipmaps = false
+noise = ExtResource("3_bpcyi")
+
+[sub_resource type="Gradient" id="Gradient_lktm6"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.584416, 0.850649, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.840553, 0.840553, 0.840553, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_puocy"]
+gradient = SubResource("Gradient_lktm6")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+
+[node name="MapBuilder" type="Node3D" node_paths=PackedStringArray("noiseViewport", "gridMap")]
+script = ExtResource("1_1vfao")
+noiseViewport = NodePath("SubViewport")
+gridMap = NodePath("GridMap")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ypqdy")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="GridMap" type="GridMap" parent="."]
+mesh_library = ExtResource("2_pwytv")
+cell_size = Vector3(1, 1, 1)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 256, 256, 350)
+visible = false
+
+[node name="Preview" type="TextureRect" parent="."]
+visible = false
+offset_right = 222.0
+offset_bottom = 222.0
+texture = SubResource("CanvasTexture_efq7w")
+expand_mode = 1
+
+[node name="SubViewport" type="SubViewport" parent="."]
+render_target_clear_mode = 1
+render_target_update_mode = 4
+
+[node name="Control" type="Control" parent="SubViewport"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="noise" type="TextureRect" parent="SubViewport/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("NoiseTexture2D_uk25g")
+expand_mode = 4
+
+[node name="vignette" type="TextureRect" parent="SubViewport/Control"]
+material = ExtResource("3_iwryc")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_puocy")
+expand_mode = 4

@@ -1,0 +1,40 @@
+[gd_scene load_steps=8 format=3 uid="uid://cyh3yf1kavtqb"]
+
+[ext_resource type="Script" path="res://scripts/Player.gd" id="1_ocak7"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_upmhw"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5sca3"]
+seamless = true
+noise = SubResource("FastNoiseLite_upmhw")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dfin3"]
+albedo_color = Color(0.278431, 0.745098, 0.603922, 1)
+albedo_texture = SubResource("NoiseTexture2D_5sca3")
+
+[sub_resource type="SphereMesh" id="SphereMesh_je60j"]
+material = SubResource("StandardMaterial3D_dfin3")
+radius = 2.0
+height = 4.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_llr7x"]
+size = Vector3(2, 4, 2)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rx0ja"]
+radius = 2.0
+height = 4.0
+
+[node name="Player" type="CharacterBody3D"]
+floor_max_angle = 1.58825
+script = ExtResource("1_ocak7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_je60j")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+visible = false
+shape = SubResource("BoxShape3D_llr7x")
+disabled = true
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_rx0ja")

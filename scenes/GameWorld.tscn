@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://b10db6mmbitny"]
+
+[ext_resource type="PackedScene" uid="uid://cc24ri8n7xvoc" path="res://scenes/map_builder.tscn" id="1_677ns"]
+[ext_resource type="Script" path="res://scenes/CameraFollower.gd" id="2_thc0g"]
+[ext_resource type="PackedScene" uid="uid://cyh3yf1kavtqb" path="res://scenes/Player.tscn" id="3_f7fbq"]
+
+[node name="GameWorld" type="Node3D"]
+
+[node name="MapBuilder" parent="." instance=ExtResource("1_677ns")]
+
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.32, 32)
+current = true
+script = ExtResource("2_thc0g")
+target = NodePath("../Player")
+
+[node name="Player" parent="." instance=ExtResource("3_f7fbq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 64, 0)
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true

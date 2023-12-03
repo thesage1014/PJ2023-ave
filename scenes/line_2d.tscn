@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://ou08o3ftrug"]
+
+[ext_resource type="Material" uid="uid://bsypapet4r4jl" path="res://graphics/multiply.tres" id="1_ia8rq"]
+
+[sub_resource type="Curve" id="Curve_8fn03"]
+_data = [Vector2(0.00526316, 1), 0.0, 0.0, 0, 0, Vector2(0.505263, 0.494505), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_nb6t6"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.28169, 0.5, 0.683099, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.50571, 0.50571, 0.50571, 1, 0, 0, 0, 1, 0.496182, 0.496182, 0.496182, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_08ajx"]
+gradient = SubResource("Gradient_nb6t6")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Curve2D" id="Curve2D_8s8kw"]
+_data = {
+"points": PackedVector2Array(0, 0, -0.317497, -1.24492, 2, 2, -78.4915, -70.489, 78.4915, 70.489, 137, 142, -240.542, 5.61231, 240.542, -5.61231, 621, 142, -76.0379, -97.6542, 76.0379, 97.6542, 768, 328)
+}
+point_count = 4
+
+[node name="Line2D" type="Line2D"]
+material = ExtResource("1_ia8rq")
+points = PackedVector2Array(48, 50, 336, 71, 107, 286, 521, 162, 549, 152, 553, 175, 380, 423)
+width = 60.0
+width_curve = SubResource("Curve_8fn03")
+texture = SubResource("GradientTexture2D_08ajx")
+texture_mode = 1
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="Path2D" type="Path2D" parent="."]
+curve = SubResource("Curve2D_8s8kw")

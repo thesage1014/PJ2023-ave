@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://c341qvyl03qjp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7016x"]
+albedo_color = Color(0.694118, 0.427451, 0.0117647, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_2gnjq"]
+material = SubResource("StandardMaterial3D_7016x")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_48x7j"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cjh2i"]
+albedo_color = Color(0.258824, 0.423529, 0.494118, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_glgvj"]
+material = SubResource("StandardMaterial3D_cjh2i")
+
+[node name="GridMapTiles" type="Node3D"]
+
+[node name="dirt" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_2gnjq")
+skeleton = NodePath("../stone")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="dirt"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="dirt/StaticBody3D"]
+shape = SubResource("BoxShape3D_48x7j")
+
+[node name="stone" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_glgvj")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="stone"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="stone/StaticBody3D"]
+shape = SubResource("BoxShape3D_48x7j")
