@@ -1,9 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://b10db6mmbitny"]
+[gd_scene load_steps=13 format=3 uid="uid://b10db6mmbitny"]
 
 [ext_resource type="PackedScene" uid="uid://cc24ri8n7xvoc" path="res://scenes/map_builder.tscn" id="1_677ns"]
 [ext_resource type="Script" path="res://scenes/CameraFollower.gd" id="2_thc0g"]
+[ext_resource type="MeshLibrary" uid="uid://ftt25vrnopyd" path="res://models/gridMapTiles.tres" id="2_xfuou"]
 [ext_resource type="PackedScene" uid="uid://cyh3yf1kavtqb" path="res://scenes/Player.tscn" id="3_f7fbq"]
 [ext_resource type="Script" path="res://scripts/DirtMover.gd" id="4_6sp7f"]
+[ext_resource type="PackedScene" uid="uid://bs8rm1nchauli" path="res://scenes/Powerup.tscn" id="6_jn7kw"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ak08y"]
 plane = Plane(0, 0, 1, 0)
@@ -19,8 +21,10 @@ radius = 2.0
 height = 4.0
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jgg6a"]
-sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+sky_top_color = Color(0.172549, 0.0862745, 0.027451, 1)
+sky_horizon_color = Color(0.12549, 0.0588235, 0.0156863, 1)
+ground_bottom_color = Color(0.109303, 0.0470318, 0.0117863, 1)
+ground_horizon_color = Color(0.12549, 0.0588235, 0.0156863, 1)
 
 [sub_resource type="Sky" id="Sky_kjhyb"]
 sky_material = SubResource("ProceduralSkyMaterial_jgg6a")
@@ -28,6 +32,7 @@ sky_material = SubResource("ProceduralSkyMaterial_jgg6a")
 [sub_resource type="Environment" id="Environment_8kjp8"]
 background_mode = 2
 sky = SubResource("Sky_kjhyb")
+ambient_light_source = 1
 tonemap_mode = 2
 glow_enabled = true
 
@@ -52,6 +57,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.9643, 3.45045, 0)
 mesh = SubResource("SphereMesh_6rh3q")
 script = ExtResource("4_6sp7f")
 
+[node name="HelperGM" type="GridMap" parent="DirtMover"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+mesh_library = ExtResource("2_xfuou")
+cell_size = Vector3(1, 1, 1)
+collision_layer = 0
+collision_mask = 0
+
 [node name="MapBuilder" parent="." instance=ExtResource("1_677ns")]
 
 [node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("target")]
@@ -60,18 +72,33 @@ current = true
 script = ExtResource("2_thc0g")
 target = NodePath("../Player")
 
-[node name="Player" parent="." instance=ExtResource("3_f7fbq")]
+[node name="Player" parent="." node_paths=PackedStringArray("dirtMover") instance=ExtResource("3_f7fbq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 64, 0)
 axis_lock_linear_z = true
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
+dirtMover = NodePath("../DirtMover")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_8kjp8")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.962099, -0.0832453, 0.259684, -0.121145, 0.722671, 0.680493, -0.244314, -0.686161, 0.685196, 4.76837e-07, 3.67372, 4.98184)
+light_color = Color(1, 0.854902, 0.811765, 1)
+light_energy = 0.01
+light_indirect_energy = 0.0
+
+[node name="DirectionalLight3DPlayer" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.962099, -0.0832453, 0.259684, -0.121145, 0.722671, 0.680493, -0.244314, -0.686161, 0.685196, 4.76837e-07, 3.67372, 4.98184)
+light_color = Color(1, 0.854902, 0.811765, 1)
+light_energy = 0.1
+light_indirect_energy = 0.0
+light_cull_mask = 4294966274
 shadow_enabled = true
+
+[node name="Powerup" parent="." instance=ExtResource("6_jn7kw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.1364, 70.1423, 1.1)
+type = 2
 
 [connection signal="input_event" from="InputPlane" to="DirtMover" method="_on_static_body_3d_input_event"]

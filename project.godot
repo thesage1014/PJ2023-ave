@@ -19,6 +19,12 @@ config/icon="res://icon.svg"
 
 Singleton="*res://scripts/Singleton.gd"
 
+[importer_defaults]
+
+texture={
+"detect_3d/compress_to": 0
+}
+
 [input]
 
 ui_left={

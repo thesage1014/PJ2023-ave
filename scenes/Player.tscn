@@ -1,17 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://cyh3yf1kavtqb"]
+[gd_scene load_steps=9 format=3 uid="uid://cyh3yf1kavtqb"]
 
 [ext_resource type="Script" path="res://scripts/Player.gd" id="1_ocak7"]
 [ext_resource type="Texture2D" uid="uid://d17vc23awh0ja" path="res://graphics/rope.png" id="2_b43yh"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_1oggh"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5sca3"]
-seamless = true
-noise = SubResource("FastNoiseLite_1oggh")
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k02db"]
 albedo_color = Color(0.278431, 0.745098, 0.603922, 1)
-albedo_texture = SubResource("NoiseTexture2D_5sca3")
+emission = Color(1, 1, 1, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_je60j"]
 material = SubResource("StandardMaterial3D_k02db")
@@ -39,10 +33,13 @@ rings = 1
 
 [node name="Player" type="CharacterBody3D"]
 input_ray_pickable = false
+floor_constant_speed = true
 floor_max_angle = 1.58825
+floor_snap_length = 0.5
 script = ExtResource("1_ocak7")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+layers = 2
 mesh = SubResource("SphereMesh_je60j")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -57,4 +54,10 @@ shape = SubResource("CapsuleShape3D_rx0ja")
 [node name="RopeMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 2.1443)
 visible = false
+layers = 2
 mesh = SubResource("CylinderMesh_vibp0")
+
+[node name="Light" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.85973)
+light_cull_mask = 4294967293
+omni_range = 25.0

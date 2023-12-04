@@ -4,13 +4,20 @@ enum {GRAPPLER,DIRTMOVER}
 @export var SPEED = 50.0
 @export var JUMP_VELOCITY = 30
 @export var fly_amount = 0 # 1 means fully flying
-@export var drag = .98
-var gravity = 30
+@export var drag = .975
+@export var dirtMover:DirtMover
+var gravity = 40
 var grapplerScene = preload("res://scenes/Grappler.tscn")
 var grappleCharge = 0.0
 var _active_grappler:RigidBody3D
 var grappler_grappled = false
-var gear = GRAPPLER
+var gear:set = set_gear, get = get_gear
+var _gear = GRAPPLER
+var light_radius = 25.0
+var health = 10.0
+var max_health = 10.0
+var multi_jumps = 1
+var recent_jumps = 0
 
 func _enter_tree():
 	Singleton.player = self
@@ -46,21 +53,23 @@ func _physics_process(delta):
 
 	if not is_on_floor():
 		velocity.y -= gravity * delta
-
+	else:
+		recent_jumps = 0
 	# Handle jump.
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+	if Input.is_action_just_pressed("ui_accept") and (is_on_floor() or recent_jumps < multi_jumps):
 		velocity.y = JUMP_VELOCITY
-		
+		recent_jumps += 1
 	if move_and_slide():
 		var kc = get_last_slide_collision()
 		if kc.get_collider(0) is StaticBody3D:
 			print(kc.get_collider(0))
 			velocity = Vector3.ZERO
 	
-	if !_active_grappler and Input.is_action_just_released("left_mouse"):
-		shoot_grappler()
-	if Input.is_action_just_pressed("right_mouse"):
-		ungrapple()
+	if gear == GRAPPLER:
+		if !_active_grappler and Input.is_action_just_released("left_mouse"):
+			shoot_grappler()
+		if Input.is_action_just_pressed("right_mouse"):
+			ungrapple()
 	if Input.is_action_just_pressed("1"):
 		gear = GRAPPLER
 	if Input.is_action_just_pressed("2"):
@@ -85,3 +94,31 @@ func ungrapple():
 	if _active_grappler:
 		_active_grappler.queue_free()
 		_active_grappler = null
+
+func set_gear(value):
+	_gear = value
+	ungrapple()
+	dirtMover.clear()
+	if value == DIRTMOVER:
+		dirtMover.visible = true
+	else:
+		dirtMover.visible = false
+	
+func get_gear():
+	return _gear
+
+func on_powerup_hit(powerup:Powerup):
+	if powerup.type == powerup.powerup_type.ROPE:
+		Singleton.max_grapple_dist += 6
+	if powerup.type == powerup.powerup_type.POT:
+		health = minf(max_health,health + 5.0)
+	if powerup.type == powerup.powerup_type.LANTERN:
+		light_radius += 5
+		$Light.omni_range = light_radius
+	if powerup.type == powerup.powerup_type.MAXHEART:
+		max_health += 5
+	if powerup.type == powerup.powerup_type.SHOVEL:
+		dirtMover.moverSize += 1
+	if powerup.type == powerup.powerup_type.BOOTS:
+		multi_jumps += 1
+	powerup.queue_free()
