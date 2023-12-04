@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cc24ri8n7xvoc"]
+[gd_scene load_steps=10 format=3 uid="uid://cc24ri8n7xvoc"]
 
 [ext_resource type="Script" path="res://scripts/MapBuilder.gd" id="1_1vfao"]
 [ext_resource type="MeshLibrary" uid="uid://ftt25vrnopyd" path="res://models/gridMapTiles.tres" id="2_pwytv"]
@@ -18,19 +18,6 @@ colors = PackedColorArray(0, 0, 0, 1, 0.840553, 0.840553, 0.840553, 1, 1, 1, 1, 
 gradient = SubResource("Gradient_lktm6")
 fill = 2
 fill_from = Vector2(0.5, 0.5)
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_x0y4w"]
-sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
-
-[sub_resource type="Sky" id="Sky_kjhyb"]
-sky_material = SubResource("ProceduralSkyMaterial_x0y4w")
-
-[sub_resource type="Environment" id="Environment_ypqdy"]
-background_mode = 2
-sky = SubResource("Sky_kjhyb")
-tonemap_mode = 2
-glow_enabled = true
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_lkdfq"]
 viewport_path = NodePath("SubViewport")
@@ -79,22 +66,17 @@ script = ExtResource("1_1vfao")
 noiseViewport = NodePath("../SubViewport")
 gridMap = NodePath("GridMap")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="MapBuilder"]
-environment = SubResource("Environment_ypqdy")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="MapBuilder"]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
-shadow_enabled = true
-
 [node name="GridMap" type="GridMap" parent="MapBuilder"]
 mesh_library = ExtResource("2_pwytv")
 cell_size = Vector3(1, 1, 1)
+collision_layer = 3
+collision_mask = 3
 
 [node name="Camera3D" type="Camera3D" parent="MapBuilder"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 256, 256, 350)
-current = true
 
 [node name="Preview" type="TextureRect" parent="MapBuilder"]
+visible = false
 offset_right = 222.0
 offset_bottom = 222.0
 texture = SubResource("CanvasTexture_efq7w")

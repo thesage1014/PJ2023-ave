@@ -18,7 +18,7 @@ func _process(_delta):
 		_place_lines()
 		load("res://graphics/noisebase.tres").seed = randi()		
 		_generated = false
-	elif Time.get_ticks_msec()-_last_generated_time > 2.0 and !_generated:
+	elif Time.get_ticks_msec()-_last_generated_time > 0.1 and !_generated:
 		await RenderingServer.frame_post_draw
 		_generated = true
 		var noiseTex = noiseViewport.get_texture()

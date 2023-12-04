@@ -1,0 +1,52 @@
+[gd_scene load_steps=9 format=3 uid="uid://sbxbmaqarint"]
+
+[ext_resource type="Texture2D" uid="uid://cjhilssr8kdps" path="res://graphics/grappler.png" id="1_0en02"]
+[ext_resource type="Script" path="res://scripts/Grappler.gd" id="1_31wm0"]
+[ext_resource type="Texture2D" uid="uid://d17vc23awh0ja" path="res://graphics/rope.png" id="3_jysey"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7wkkd"]
+transparency = 1
+albedo_texture = ExtResource("1_0en02")
+
+[sub_resource type="QuadMesh" id="QuadMesh_6sskv"]
+material = SubResource("StandardMaterial3D_7wkkd")
+size = Vector2(2, 2)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_dnvqg"]
+height = 1.0
+radius = 0.83714
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ex6ge"]
+albedo_texture = ExtResource("3_jysey")
+
+[sub_resource type="QuadMesh" id="QuadMesh_dxdrv"]
+material = SubResource("StandardMaterial3D_ex6ge")
+size = Vector2(0.3, 1)
+
+[node name="Grappler" type="RigidBody3D"]
+collision_layer = 2
+collision_mask = 2
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, 2, 0)
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("1_31wm0")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.815269, 1.43068)
+mesh = SubResource("QuadMesh_6sskv")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.0132301, 1.13091, 0)
+shape = SubResource("CylinderShape3D_dnvqg")
+
+[node name="RopeMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.43068)
+mesh = SubResource("QuadMesh_dxdrv")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_shape_entered" from="." to="." method="_on_body_shape_entered"]
