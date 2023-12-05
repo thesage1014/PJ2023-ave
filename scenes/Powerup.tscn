@@ -25,6 +25,7 @@ material = SubResource("StandardMaterial3D_4ldca")
 size = Vector2(2, 2)
 
 [node name="Powerup" type="Area3D"]
+input_ray_pickable = false
 script = ExtResource("1_gl0a4")
 icons = Array[CompressedTexture2D]([ExtResource("2_kkobn"), ExtResource("3_tkx5r"), ExtResource("4_iqp85"), ExtResource("5_h7wog"), ExtResource("6_0gg75"), ExtResource("7_64fhq")])
 

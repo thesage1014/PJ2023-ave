@@ -38,7 +38,7 @@ floor_max_angle = 1.58825
 floor_snap_length = 0.5
 script = ExtResource("1_ocak7")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Mesh" type="MeshInstance3D" parent="."]
 layers = 2
 mesh = SubResource("SphereMesh_je60j")
 
@@ -61,3 +61,4 @@ mesh = SubResource("CylinderMesh_vibp0")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.85973)
 light_cull_mask = 4294967293
 omni_range = 25.0
+omni_attenuation = 0.554785

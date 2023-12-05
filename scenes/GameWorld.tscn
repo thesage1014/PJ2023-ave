@@ -1,11 +1,13 @@
-[gd_scene load_steps=13 format=3 uid="uid://b10db6mmbitny"]
+[gd_scene load_steps=16 format=3 uid="uid://b10db6mmbitny"]
 
 [ext_resource type="PackedScene" uid="uid://cc24ri8n7xvoc" path="res://scenes/map_builder.tscn" id="1_677ns"]
+[ext_resource type="Script" path="res://scripts/GameWorld.gd" id="1_t1j4s"]
 [ext_resource type="Script" path="res://scenes/CameraFollower.gd" id="2_thc0g"]
 [ext_resource type="MeshLibrary" uid="uid://ftt25vrnopyd" path="res://models/gridMapTiles.tres" id="2_xfuou"]
 [ext_resource type="PackedScene" uid="uid://cyh3yf1kavtqb" path="res://scenes/Player.tscn" id="3_f7fbq"]
 [ext_resource type="Script" path="res://scripts/DirtMover.gd" id="4_6sp7f"]
-[ext_resource type="PackedScene" uid="uid://bs8rm1nchauli" path="res://scenes/Powerup.tscn" id="6_jn7kw"]
+[ext_resource type="Script" path="res://scripts/UI.gd" id="7_mhksk"]
+[ext_resource type="Theme" uid="uid://cbnalb0sghq1p" path="res://baseTheme.tres" id="8_5125l"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ak08y"]
 plane = Plane(0, 0, 1, 0)
@@ -36,7 +38,10 @@ ambient_light_source = 1
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="Theme" id="Theme_8ectw"]
+
 [node name="GameWorld" type="Node3D"]
+script = ExtResource("1_t1j4s")
 
 [node name="InputPlane" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.1)
@@ -97,8 +102,52 @@ light_indirect_energy = 0.0
 light_cull_mask = 4294966274
 shadow_enabled = true
 
-[node name="Powerup" parent="." instance=ExtResource("6_jn7kw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.1364, 70.1423, 1.1)
-type = 2
+[node name="UI" type="Control" parent="." node_paths=PackedStringArray("player", "hp", "hpText")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_8ectw")
+script = ExtResource("7_mhksk")
+player = NodePath("../Player")
+hp = NodePath("VBoxContainer/HBoxContainer2/ProgressBar")
+hpText = NodePath("VBoxContainer/HBoxContainer2/ProgressBar/HPText")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer"]
+visible = false
+layout_mode = 2
+text = "You're doing great"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="ProgressBar" type="ProgressBar" parent="UI/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme = ExtResource("8_5125l")
+value = 50.0
+show_percentage = false
+
+[node name="HPText" type="Label" parent="UI/VBoxContainer/HBoxContainer2/ProgressBar"]
+layout_mode = 2
+offset_right = 142.0
+offset_bottom = 23.0
+text = "HP"
 
 [connection signal="input_event" from="InputPlane" to="DirtMover" method="_on_static_body_3d_input_event"]

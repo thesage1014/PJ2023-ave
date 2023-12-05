@@ -1,0 +1,47 @@
+[gd_scene load_steps=7 format=3 uid="uid://cejwpvulelpy3"]
+
+[ext_resource type="Script" path="res://scripts/Enemy.gd" id="1_6fkxb"]
+[ext_resource type="Texture2D" uid="uid://ddasdwxfsisy7" path="res://graphics/icons/Monster Eye.png" id="2_exyfp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hn28g"]
+transparency = 1
+albedo_texture = ExtResource("2_exyfp")
+backlight_enabled = true
+backlight = Color(0.278431, 0.278431, 0.278431, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_c5gue"]
+material = SubResource("StandardMaterial3D_hn28g")
+radial_segments = 11
+rings = 16
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_7f82m"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_vpikh"]
+radius = 15.0
+
+[node name="Enemy" type="RigidBody3D"]
+input_ray_pickable = false
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("1_6fkxb")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+mesh = SubResource("SphereMesh_c5gue")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_7f82m")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+light_color = Color(1, 0.34902, 0.34902, 1)
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_vpikh")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

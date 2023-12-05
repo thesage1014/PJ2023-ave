@@ -1,9 +1,10 @@
-extends Node3D
+class_name MapBuilder extends Node3D
 @export var noiseViewport:SubViewport
 @export var gridMap:GridMap
 var lineScene = preload("res://scenes/line_2d.tscn")
 var blobScene = preload("res://scenes/blob.tscn")
 var powerupScene = preload("res://scenes/Powerup.tscn")
+var enemyScene = preload("res://scenes/Enemy.tscn")
 var mapSize = Vector2i(512,512)
 var _generated = false
 var _last_generated_time = 0
@@ -15,10 +16,7 @@ func _ready():
 
 func _process(_delta):
 	if Input.is_action_just_pressed("ui_cancel"):
-		gridMap.clear()
-		_place_lines()
-		load("res://graphics/noisebase.tres").seed = randi()		
-		_generated = false
+		rebuild_world()
 	elif Time.get_ticks_msec()-_last_generated_time > 0.1 and !_generated:
 		await RenderingServer.frame_post_draw
 		_generated = true
@@ -34,9 +32,7 @@ func _process(_delta):
 			
 
 func _place_lines():
-	for _child in noiseViewport.get_children():
-		if _child is Line2D or _child is TextureRect or _child is Powerup:
-			_child.queue_free()
+	
 	var numDests = 24
 	var points:Array[Vector2] = []
 	var margin = 64
@@ -63,21 +59,26 @@ func _place_lines():
 		#for i in range (3):
 			#linePoints.append(points[delaunay[i+j*3]])
 		#linePoints.append(points[delaunay[j*3]])
+	draw_blob(Vector2(64,64))
 	for j in range(mst.size()/2):
 		linePoints = []
 		for i in range (2):
 			linePoints.append(points[mst[i+j*2]])
 		#linePoints.append(points[mst[j*2]])
-		var newBlob = blobScene.instantiate() as TextureRect
-		noiseViewport.add_child(newBlob)
-		newBlob.position = linePoints[0]
-		var newPowerup = powerupScene.instantiate() as Powerup
-		newPowerup.type = randi_range(0,Powerup.powerup_type.size()-1)
-		add_child(newPowerup)
-		newPowerup.position = Vector3(linePoints[0].x,linePoints[0].y,0)
-		var newLine = lineScene.instantiate() as Line2D
-		noiseViewport.add_child(newLine)
-		newLine.points = PackedVector2Array(linePoints)
+		draw_blob(linePoints[0])
+		spawn_powerup(Vector3(linePoints[0].x,linePoints[0].y,0))
+		spawn_enemy(Vector3(linePoints[0].x,linePoints[0].y,0))
+		draw_line(linePoints)
+
+func rebuild_world():
+	Singleton.player.respawn()
+	gridMap.clear()
+	for _child in noiseViewport.get_children():
+		if _child is Line2D or _child is TextureRect or _child is Powerup or _child is Enemy or _child is Exit:
+			_child.queue_free()
+	_place_lines()
+	load("res://graphics/noisebase.tres").seed = randi()
+	_generated = false
 
 func prim(points:Array[Vector2]):
 	var neighbors = []
@@ -107,3 +108,23 @@ func prim(points:Array[Vector2]):
 	segments.remove_at(0)
 	return segments
 
+func spawn_powerup(targetPos):
+	var newPowerup = powerupScene.instantiate() as Powerup
+	newPowerup.type = randi_range(0,Powerup.powerup_type.size()-1)
+	add_child(newPowerup)
+	newPowerup.position = targetPos
+
+func spawn_enemy(targetPos):
+	var newEnemy = enemyScene.instantiate() as Enemy
+	add_child(newEnemy)
+	newEnemy.position = targetPos
+
+func draw_line(points):
+	var newLine = lineScene.instantiate() as Line2D
+	noiseViewport.add_child(newLine)
+	newLine.points = PackedVector2Array(points)
+
+func draw_blob(targetPos:Vector2):
+	var newBlob = blobScene.instantiate() as TextureRect
+	noiseViewport.add_child(newBlob)
+	newBlob.position = targetPos

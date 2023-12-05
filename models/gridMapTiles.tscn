@@ -1,12 +1,18 @@
-[gd_scene load_steps=8 format=3 uid="uid://c341qvyl03qjp"]
+[gd_scene load_steps=11 format=3 uid="uid://c341qvyl03qjp"]
 
 [ext_resource type="Texture2D" uid="uid://ld7eragf1yyt" path="res://graphics/ground.png" id="1_rut5o"]
+[ext_resource type="Texture2D" uid="uid://bwpdneak8h5lm" path="res://graphics/ground_dis.png" id="2_bkf0i"]
+[ext_resource type="Texture2D" uid="uid://cab4kilovj4iq" path="res://graphics/ground_normal.png" id="2_oki82"]
 [ext_resource type="Texture2D" uid="uid://c4bcdltw7s31l" path="res://graphics/rock.png" id="2_uwe0d"]
+[ext_resource type="Texture2D" uid="uid://il55ni3g4okd" path="res://graphics/rock_normal.png" id="4_vtw85"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nf6yy"]
 albedo_texture = ExtResource("1_rut5o")
+roughness = 0.3
 normal_enabled = true
-normal_texture = ExtResource("1_rut5o")
+normal_scale = 0.5
+normal_texture = ExtResource("2_oki82")
+heightmap_texture = ExtResource("2_bkf0i")
 
 [sub_resource type="QuadMesh" id="QuadMesh_lqtp2"]
 material = SubResource("StandardMaterial3D_nf6yy")
@@ -15,8 +21,9 @@ material = SubResource("StandardMaterial3D_nf6yy")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uc7sr"]
 albedo_texture = ExtResource("2_uwe0d")
+roughness = 0.26
 normal_enabled = true
-normal_texture = ExtResource("2_uwe0d")
+normal_texture = ExtResource("4_vtw85")
 
 [sub_resource type="QuadMesh" id="QuadMesh_glgvj"]
 material = SubResource("StandardMaterial3D_uc7sr")
@@ -33,6 +40,7 @@ skeleton = NodePath("../stone")
 shape = SubResource("BoxShape3D_48x7j")
 
 [node name="stone" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("QuadMesh_glgvj")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="stone"]

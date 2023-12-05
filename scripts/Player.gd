@@ -18,9 +18,18 @@ var health = 10.0
 var max_health = 10.0
 var multi_jumps = 1
 var recent_jumps = 0
+var invincible:set=_set_invincible,get=_get_invincible
+var _invincible = false
+var invince_timer = 0.0
 
 func _enter_tree():
 	Singleton.player = self
+
+func _process(delta):
+	if invincible:
+		$Mesh.visible = int(Time.get_ticks_msec()/50)%2
+	else:
+		$Mesh.visible = true
 
 func _physics_process(delta):
 	if Input.is_action_pressed("left_mouse"):
@@ -74,6 +83,9 @@ func _physics_process(delta):
 		gear = GRAPPLER
 	if Input.is_action_just_pressed("2"):
 		gear = DIRTMOVER
+	invince_timer -= delta
+	if health <= 0:
+		get_parent().rebuild_world()
 
 func shoot_grappler():
 	$RopeMesh.visible = false
@@ -122,3 +134,21 @@ func on_powerup_hit(powerup:Powerup):
 	if powerup.type == powerup.powerup_type.BOOTS:
 		multi_jumps += 1
 	powerup.queue_free()
+
+func respawn():
+	health = max_health
+	invince_timer = 2.0
+	global_position = Vector3(64,64,0)
+
+func on_enemy_hit(enemy:Enemy):
+	if !invincible:
+		health -= enemy.attackStrength
+		invince_timer = 1
+
+func exit():
+	(get_parent() as GameWorld).rebuild_world()
+
+func _set_invincible(value):
+	_invincible = value
+func _get_invincible():
+	return _invincible or invince_timer > 0
