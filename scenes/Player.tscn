@@ -6,6 +6,8 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k02db"]
 albedo_color = Color(0.278431, 0.745098, 0.603922, 1)
 emission = Color(1, 1, 1, 1)
+backlight_enabled = true
+backlight = Color(0.231373, 0.231373, 0.231373, 1)
 
 [sub_resource type="SphereMesh" id="SphereMesh_je60j"]
 material = SubResource("StandardMaterial3D_k02db")

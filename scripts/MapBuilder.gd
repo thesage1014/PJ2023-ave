@@ -73,8 +73,11 @@ func _place_lines():
 func rebuild_world():
 	Singleton.player.respawn()
 	gridMap.clear()
+	for _child in get_children():
+		if _child is Powerup or _child is Enemy or _child is Exit:
+			_child.queue_free()
 	for _child in noiseViewport.get_children():
-		if _child is Line2D or _child is TextureRect or _child is Powerup or _child is Enemy or _child is Exit:
+		if _child is Line2D or _child is TextureRect:
 			_child.queue_free()
 	_place_lines()
 	load("res://graphics/noisebase.tres").seed = randi()

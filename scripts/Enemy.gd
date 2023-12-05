@@ -15,10 +15,16 @@ func _physics_process(delta):
 			jumpTimer = 0
 	jumpTimer += delta
 
+func _process(delta):
+	if !target:
+		$OmniLight3D.light_cull_mask = 0
+		$OmniLight3D.layers = 0
+
 func _on_area_3d_body_entered(body):
 	if body is Player:
+		$OmniLight3D.light_cull_mask = 1
+		$OmniLight3D.layers = 1
 		target = body
-
 
 func _on_body_entered(body):
 	if body is Player:

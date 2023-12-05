@@ -104,3 +104,9 @@ right_mouse={
 
 3d/default_gravity=14.0
 2d/default_gravity=15000.0
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+limits/opengl/max_renderable_lights=64
+limits/opengl/max_lights_per_object=64

@@ -34,7 +34,9 @@ sky_material = SubResource("ProceduralSkyMaterial_jgg6a")
 [sub_resource type="Environment" id="Environment_8kjp8"]
 background_mode = 2
 sky = SubResource("Sky_kjhyb")
-ambient_light_source = 1
+ambient_light_source = 2
+ambient_light_color = Color(0.976471, 0.745098, 0.415686, 1)
+ambient_light_energy = 0.01
 tonemap_mode = 2
 glow_enabled = true
 
@@ -93,14 +95,16 @@ transform = Transform3D(0.962099, -0.0832453, 0.259684, -0.121145, 0.722671, 0.6
 light_color = Color(1, 0.854902, 0.811765, 1)
 light_energy = 0.01
 light_indirect_energy = 0.0
+directional_shadow_max_distance = 0.0
 
 [node name="DirectionalLight3DPlayer" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.962099, -0.0832453, 0.259684, -0.121145, 0.722671, 0.680493, -0.244314, -0.686161, 0.685196, 4.76837e-07, 3.67372, 4.98184)
+visible = false
+layers = 2
 light_color = Color(1, 0.854902, 0.811765, 1)
 light_energy = 0.1
 light_indirect_energy = 0.0
 light_cull_mask = 4294966274
-shadow_enabled = true
 
 [node name="UI" type="Control" parent="." node_paths=PackedStringArray("player", "hp", "hpText")]
 layout_mode = 3
@@ -109,6 +113,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme = SubResource("Theme_8ectw")
 script = ExtResource("7_mhksk")
 player = NodePath("../Player")
@@ -122,9 +127,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer"]
 visible = false
@@ -134,12 +141,14 @@ text = "You're doing great"
 [node name="HBoxContainer2" type="HBoxContainer" parent="UI/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 10
+mouse_filter = 2
 
 [node name="ProgressBar" type="ProgressBar" parent="UI/VBoxContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+mouse_filter = 2
 theme = ExtResource("8_5125l")
 value = 50.0
 show_percentage = false
