@@ -1,18 +1,20 @@
-[gd_scene load_steps=9 format=3 uid="uid://cyh3yf1kavtqb"]
+[gd_scene load_steps=11 format=3 uid="uid://cyh3yf1kavtqb"]
 
 [ext_resource type="Script" path="res://scripts/Player.gd" id="1_ocak7"]
 [ext_resource type="Texture2D" uid="uid://d17vc23awh0ja" path="res://graphics/rope.png" id="2_b43yh"]
+[ext_resource type="Texture2D" uid="uid://d0kmj7onmugua" path="res://graphics/liz.png" id="2_c7f4p"]
+[ext_resource type="Texture2D" uid="uid://d34v6i5p3w8gd" path="res://graphics/liz_normal.png" id="3_enb5w"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k02db"]
-albedo_color = Color(0.278431, 0.745098, 0.603922, 1)
-emission = Color(1, 1, 1, 1)
-backlight_enabled = true
-backlight = Color(0.231373, 0.231373, 0.231373, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ko8jc"]
+transparency = 1
+albedo_texture = ExtResource("2_c7f4p")
+normal_enabled = true
+normal_texture = ExtResource("3_enb5w")
+texture_filter = 4
 
-[sub_resource type="SphereMesh" id="SphereMesh_je60j"]
-material = SubResource("StandardMaterial3D_k02db")
-radius = 2.0
-height = 4.0
+[sub_resource type="QuadMesh" id="QuadMesh_rj0fp"]
+material = SubResource("StandardMaterial3D_ko8jc")
+size = Vector2(4, 4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_llr7x"]
 size = Vector3(3, 3, 2)
@@ -41,8 +43,9 @@ floor_snap_length = 0.5
 script = ExtResource("1_ocak7")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
-layers = 2
-mesh = SubResource("SphereMesh_je60j")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.03497)
+layers = 3
+mesh = SubResource("QuadMesh_rj0fp")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0, 0, 0)
@@ -59,8 +62,8 @@ visible = false
 layers = 2
 mesh = SubResource("CylinderMesh_vibp0")
 
-[node name="Light" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.85973)
-light_cull_mask = 4294967293
-omni_range = 25.0
-omni_attenuation = 0.554785
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1903, 0.899143, -0.580962)
+light_color = Color(0.160784, 0.984314, 1, 1)
+light_energy = 0.42
+omni_range = 1.013

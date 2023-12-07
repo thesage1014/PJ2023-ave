@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cc24ri8n7xvoc"]
+[gd_scene load_steps=19 format=3 uid="uid://cc24ri8n7xvoc"]
 
 [ext_resource type="Script" path="res://scripts/MapBuilder.gd" id="1_1vfao"]
 [ext_resource type="MeshLibrary" uid="uid://ftt25vrnopyd" path="res://models/gridMapTiles.tres" id="2_pwytv"]
@@ -20,13 +20,6 @@ colors = PackedColorArray(0, 0, 0, 1, 0.840553, 0.840553, 0.840553, 1, 1, 1, 1, 
 gradient = SubResource("Gradient_lktm6")
 fill = 2
 fill_from = Vector2(0.5, 0.5)
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_lkdfq"]
-viewport_path = NodePath("SubViewport")
-
-[sub_resource type="CanvasTexture" id="CanvasTexture_efq7w"]
-resource_local_to_scene = true
-diffuse_texture = SubResource("ViewportTexture_lkdfq")
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_4yrtk"]
 load_path = "res://.godot/imported/rock.png-549029607f28d12fb9bc48ede2f84117.ctex"
@@ -113,13 +106,6 @@ collision_mask = 3
 
 [node name="Camera3D" type="Camera3D" parent="MapBuilder"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 256, 256, 350)
-
-[node name="Preview" type="TextureRect" parent="MapBuilder"]
-visible = false
-offset_right = 222.0
-offset_bottom = 222.0
-texture = SubResource("CanvasTexture_efq7w")
-expand_mode = 1
 
 [node name="BACKGROUND" type="MeshInstance3D" parent="MapBuilder"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 256, 256, -2)

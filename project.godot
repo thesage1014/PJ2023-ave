@@ -107,6 +107,5 @@ right_mouse={
 
 [rendering]
 
-renderer/rendering_method="gl_compatibility"
 limits/opengl/max_renderable_lights=64
 limits/opengl/max_lights_per_object=64

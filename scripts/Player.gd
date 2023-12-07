@@ -1,11 +1,12 @@
 class_name Player extends CharacterBody3D
-enum {GRAPPLER,DIRTMOVER}
+enum {GRAPPLER,DIRTMOVER,SAPPHIRE}
 
 @export var SPEED = 50.0
 @export var JUMP_VELOCITY = 30
 @export var fly_amount = 0 # 1 means fully flying
 @export var drag = .975
 @export var dirtMover:DirtMover
+@export var light:Light3D
 var gravity = 40
 var grapplerScene = preload("res://scenes/Grappler.tscn")
 var grappleCharge = 0.0
@@ -21,6 +22,7 @@ var recent_jumps = 0
 var invincible:set=_set_invincible,get=_get_invincible
 var _invincible = false
 var invince_timer = 0.0
+var _shoot_grappler = false
 
 func _enter_tree():
 	Singleton.player = self
@@ -74,15 +76,16 @@ func _physics_process(delta):
 			print(kc.get_collider(0))
 			velocity = Vector3.ZERO
 	
-	if gear == GRAPPLER:
-		if !_active_grappler and Input.is_action_just_released("left_mouse"):
-			shoot_grappler()
-		if Input.is_action_just_pressed("right_mouse"):
-			ungrapple()
+	if _shoot_grappler:
+		shoot_grappler()
+		_shoot_grappler = false
+	
 	if Input.is_action_just_pressed("1"):
 		gear = GRAPPLER
 	if Input.is_action_just_pressed("2"):
 		gear = DIRTMOVER
+	if Input.is_action_just_pressed("3"):
+		gear = SAPPHIRE
 	invince_timer -= delta
 	if health <= 0:
 		get_parent().rebuild_world()
@@ -126,7 +129,7 @@ func on_powerup_hit(powerup:Powerup):
 		health = minf(max_health,health + 5.0)
 	if powerup.type == powerup.powerup_type.LANTERN:
 		light_radius += 5
-		$Light.omni_range = light_radius
+		light.omni_range = light_radius
 	if powerup.type == powerup.powerup_type.MAXHEART:
 		max_health += 5
 	if powerup.type == powerup.powerup_type.SHOVEL:
@@ -147,6 +150,26 @@ func on_enemy_hit(enemy:Enemy):
 
 func exit():
 	(get_parent() as GameWorld).rebuild_world()
+
+func input_plane_event(camera, event, position, normal, shape_idx):
+	#if gear == GRAPPLER:
+		#if !_active_grappler and Input.is_action_just_released("left_mouse"):
+			#shoot_grappler()
+		#if Input.is_action_just_pressed("right_mouse"):
+			#ungrapple()
+	if event is InputEventMouseButton:
+		var me = event as InputEventMouseButton
+		if me.button_index == MOUSE_BUTTON_RIGHT:
+			if me.pressed:
+				ungrapple()
+			else:
+				pass
+		if me.button_index == MOUSE_BUTTON_LEFT:
+			if me.pressed:
+				pass
+			else:
+				if !_active_grappler:
+					_shoot_grappler = true
 
 func _set_invincible(value):
 	_invincible = value

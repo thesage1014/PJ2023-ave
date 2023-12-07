@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://b10db6mmbitny"]
+[gd_scene load_steps=23 format=3 uid="uid://b10db6mmbitny"]
 
 [ext_resource type="PackedScene" uid="uid://cc24ri8n7xvoc" path="res://scenes/map_builder.tscn" id="1_677ns"]
 [ext_resource type="Script" path="res://scripts/GameWorld.gd" id="1_t1j4s"]
@@ -8,6 +8,11 @@
 [ext_resource type="Script" path="res://scripts/DirtMover.gd" id="4_6sp7f"]
 [ext_resource type="Script" path="res://scripts/UI.gd" id="7_mhksk"]
 [ext_resource type="Theme" uid="uid://cbnalb0sghq1p" path="res://baseTheme.tres" id="8_5125l"]
+[ext_resource type="ButtonGroup" uid="uid://cyjdespgwd4av" path="res://scenes/ui_button_group.tres" id="8_x3ldf"]
+[ext_resource type="Texture2D" uid="uid://d3tsryxwgqhl0" path="res://graphics/icons/rope_icon.png" id="9_kdim1"]
+[ext_resource type="Script" path="res://scripts/ItemButton.gd" id="10_kvmli"]
+[ext_resource type="Texture2D" uid="uid://blbgu7i5lc5rs" path="res://graphics/icons/Shovel.png" id="10_snjy3"]
+[ext_resource type="Texture2D" uid="uid://baqip437wlvpa" path="res://graphics/icons/Sapphire Staff.png" id="11_j26ml"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ak08y"]
 plane = Plane(0, 0, 1, 0)
@@ -36,11 +41,17 @@ background_mode = 2
 sky = SubResource("Sky_kjhyb")
 ambient_light_source = 2
 ambient_light_color = Color(0.976471, 0.745098, 0.415686, 1)
-ambient_light_energy = 0.01
+ambient_light_energy = 0.0
 tonemap_mode = 2
-glow_enabled = true
 
 [sub_resource type="Theme" id="Theme_8ectw"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_go24w"]
+viewport_path = NodePath("MapBuilder/SubViewport")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_tt7rd"]
+resource_local_to_scene = true
+diffuse_texture = SubResource("ViewportTexture_go24w")
 
 [node name="GameWorld" type="Node3D"]
 script = ExtResource("1_t1j4s")
@@ -79,13 +90,23 @@ current = true
 script = ExtResource("2_thc0g")
 target = NodePath("../Player")
 
-[node name="Player" parent="." node_paths=PackedStringArray("dirtMover") instance=ExtResource("3_f7fbq")]
+[node name="Player" parent="." node_paths=PackedStringArray("dirtMover", "light") instance=ExtResource("3_f7fbq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 64, 0)
 axis_lock_linear_z = true
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
 dirtMover = NodePath("../DirtMover")
+light = NodePath("../PlayerLight")
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6.37)
+remote_path = NodePath("../../PlayerLight")
+
+[node name="PlayerLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 64, 6.37)
+light_cull_mask = 4294967293
+omni_range = 25.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_8kjp8")
@@ -93,20 +114,20 @@ environment = SubResource("Environment_8kjp8")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.962099, -0.0832453, 0.259684, -0.121145, 0.722671, 0.680493, -0.244314, -0.686161, 0.685196, 4.76837e-07, 3.67372, 4.98184)
 light_color = Color(1, 0.854902, 0.811765, 1)
-light_energy = 0.01
+light_energy = 0.001
 light_indirect_energy = 0.0
 directional_shadow_max_distance = 0.0
 
 [node name="DirectionalLight3DPlayer" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.962099, -0.0832453, 0.259684, -0.121145, 0.722671, 0.680493, -0.244314, -0.686161, 0.685196, 4.76837e-07, 3.67372, 4.98184)
-visible = false
+transform = Transform3D(0.872275, -0.318435, 0.371127, 0.133707, 0.885313, 0.445358, -0.470381, -0.338852, 0.814813, 0.987881, 9.71872, 5.87462)
 layers = 2
 light_color = Color(1, 0.854902, 0.811765, 1)
-light_energy = 0.1
+light_energy = 0.02
 light_indirect_energy = 0.0
 light_cull_mask = 4294966274
+directional_shadow_max_distance = 0.0
 
-[node name="UI" type="Control" parent="." node_paths=PackedStringArray("player", "hp", "hpText")]
+[node name="UI" type="Control" parent="." node_paths=PackedStringArray("player", "hp", "hpText", "buttons")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -119,24 +140,91 @@ script = ExtResource("7_mhksk")
 player = NodePath("../Player")
 hp = NodePath("VBoxContainer/HBoxContainer2/ProgressBar")
 hpText = NodePath("VBoxContainer/HBoxContainer2/ProgressBar/HPText")
+buttons = NodePath("VBoxContainer/Buttons")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI"]
 layout_mode = 1
-anchors_preset = 15
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -120.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
 mouse_filter = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 mouse_filter = 2
 
 [node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer"]
 visible = false
 layout_mode = 2
 text = "You're doing great"
+
+[node name="Preview" type="TextureRect" parent="UI/VBoxContainer/HBoxContainer"]
+visible = false
+show_behind_parent = true
+top_level = true
+custom_minimum_size = Vector2(250, 250)
+layout_mode = 2
+texture = SubResource("CanvasTexture_tt7rd")
+expand_mode = 1
+
+[node name="Buttons" type="GridContainer" parent="UI/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+columns = 12
+
+[node name="Tongue" type="Button" parent="UI/VBoxContainer/Buttons"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+focus_mode = 0
+toggle_mode = true
+button_pressed = true
+action_mode = 0
+button_group = ExtResource("8_x3ldf")
+text = "
+1"
+icon = ExtResource("9_kdim1")
+alignment = 0
+icon_alignment = 2
+expand_icon = true
+script = ExtResource("10_kvmli")
+gear = "GRAPPLER"
+
+[node name="Shovel" type="Button" parent="UI/VBoxContainer/Buttons"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+focus_mode = 0
+toggle_mode = true
+button_pressed = true
+action_mode = 0
+button_group = ExtResource("8_x3ldf")
+text = "
+2"
+icon = ExtResource("10_snjy3")
+icon_alignment = 2
+expand_icon = true
+script = ExtResource("10_kvmli")
+gear = "DIRTMOVER"
+
+[node name="Sapphire" type="Button" parent="UI/VBoxContainer/Buttons"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+focus_mode = 0
+toggle_mode = true
+button_pressed = true
+action_mode = 0
+button_group = ExtResource("8_x3ldf")
+text = "
+3"
+icon = ExtResource("11_j26ml")
+icon_alignment = 2
+expand_icon = true
+script = ExtResource("10_kvmli")
+gear = "SAPPHIRE"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="UI/VBoxContainer"]
 layout_mode = 2
@@ -160,3 +248,9 @@ offset_bottom = 23.0
 text = "HP"
 
 [connection signal="input_event" from="InputPlane" to="DirtMover" method="_on_static_body_3d_input_event"]
+[connection signal="input_event" from="InputPlane" to="Player" method="input_plane_event"]
+[connection signal="toggled" from="UI/VBoxContainer/Buttons/Tongue" to="UI/VBoxContainer/Buttons/Tongue" method="_on_toggled"]
+[connection signal="toggled" from="UI/VBoxContainer/Buttons/Shovel" to="UI/VBoxContainer/Buttons/Shovel" method="_on_toggled"]
+[connection signal="toggled" from="UI/VBoxContainer/Buttons/Sapphire" to="UI/VBoxContainer/Buttons/Sapphire" method="_on_toggled"]
+
+[editable path="MapBuilder"]
