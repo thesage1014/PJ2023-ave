@@ -7,7 +7,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	var pp = Singleton.player.global_position
+	var pp = Singleton.player.mouth.global_position
 	var diff = global_position - pp
 	$RopeMesh.scale.y = diff.length()
 	$RopeMesh.rotation.z = Vector2(-diff.x,-diff.y).angle()+PI*.5

@@ -1,17 +1,24 @@
 class_name MapBuilder extends Node3D
 @export var noiseViewport:SubViewport
 @export var gridMap:GridMap
+@export var mapSize = Vector2i(512,512)
 var lineScene = preload("res://scenes/line_2d.tscn")
 var blobScene = preload("res://scenes/blob.tscn")
 var powerupScene = preload("res://scenes/Powerup.tscn")
 var enemyScene = preload("res://scenes/Enemy.tscn")
-var mapSize = Vector2i(512,512)
 var _generated = false
 var _last_generated_time = 0
+
 func _enter_tree():
 	load("res://graphics/noisebase.tres").seed = randi()
 
 func _ready():
+	($World/BACKGROUND.mesh as QuadMesh).size = Vector2(mapSize.x+50,mapSize.y+50)
+	$World/BACKGROUND.global_position = Vector3(mapSize.x/2,mapSize.y/2,-2)
+	$SubViewport/Control/centerOpener.position = Vector2(mapSize/2)
+	$SubViewport/Control/centerOpener.scale = Vector2(mapSize/64)
+	noiseViewport.size = mapSize
+	(noiseViewport.get_node("Control/noise").texture.noise as FastNoiseLite).frequency = .01 * (max(mapSize.x,mapSize.y) / 512)
 	_place_lines()
 
 func _process(_delta):
@@ -33,7 +40,8 @@ func _process(_delta):
 
 func _place_lines():
 	
-	var numDests = 24
+	var numDests = pow((mapSize.x + mapSize.y)*.005,2)
+	print(numDests)
 	var points:Array[Vector2] = []
 	var margin = 64
 	points.append(Vector2(margin,margin))

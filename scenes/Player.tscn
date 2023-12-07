@@ -1,9 +1,9 @@
 [gd_scene load_steps=11 format=3 uid="uid://cyh3yf1kavtqb"]
 
 [ext_resource type="Script" path="res://scripts/Player.gd" id="1_ocak7"]
-[ext_resource type="Texture2D" uid="uid://d17vc23awh0ja" path="res://graphics/rope.png" id="2_b43yh"]
 [ext_resource type="Texture2D" uid="uid://d0kmj7onmugua" path="res://graphics/liz.png" id="2_c7f4p"]
 [ext_resource type="Texture2D" uid="uid://d34v6i5p3w8gd" path="res://graphics/liz_normal.png" id="3_enb5w"]
+[ext_resource type="Texture2D" uid="uid://d4gn05e3g7cjn" path="res://graphics/tongue_tip.png" id="4_du5ew"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ko8jc"]
 transparency = 1
@@ -19,12 +19,12 @@ size = Vector2(4, 4)
 [sub_resource type="BoxShape3D" id="BoxShape3D_llr7x"]
 size = Vector3(3, 3, 2)
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rx0ja"]
-radius = 2.0
-height = 4.0
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_i5ffh"]
+radius = 1.1
+height = 3.8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_me5ku"]
-albedo_texture = ExtResource("2_b43yh")
+albedo_texture = ExtResource("4_du5ew")
 uv1_scale = Vector3(0.15, 0.15, 0.15)
 uv1_offset = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
@@ -35,15 +35,16 @@ height = 0.2
 radial_segments = 16
 rings = 1
 
-[node name="Player" type="CharacterBody3D"]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("mouth")]
 input_ray_pickable = false
 floor_constant_speed = true
 floor_max_angle = 1.58825
 floor_snap_length = 0.5
 script = ExtResource("1_ocak7")
+mouth = NodePath("Mouth")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.03497)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.150206, 0, 0.0577435)
 layers = 3
 mesh = SubResource("QuadMesh_rj0fp")
 
@@ -54,11 +55,10 @@ shape = SubResource("BoxShape3D_llr7x")
 disabled = true
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
-shape = SubResource("CapsuleShape3D_rx0ja")
+shape = SubResource("CapsuleShape3D_i5ffh")
 
 [node name="RopeMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 2.1443)
-visible = false
+transform = Transform3D(0.36, 0, 0, 0, -1.57361e-08, -0.36, 0, 0.36, -1.57361e-08, -0.254067, 1.29066, 0.265941)
 layers = 2
 mesh = SubResource("CylinderMesh_vibp0")
 
@@ -67,3 +67,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1903, 0.899143, -0.580962)
 light_color = Color(0.160784, 0.984314, 1, 1)
 light_energy = 0.42
 omni_range = 1.013
+
+[node name="Mouth" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.300411, 1.40192, 0)

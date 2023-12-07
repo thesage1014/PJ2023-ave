@@ -1,15 +1,15 @@
 class_name Player extends CharacterBody3D
 enum {GRAPPLER,DIRTMOVER,SAPPHIRE}
-
 @export var SPEED = 50.0
 @export var JUMP_VELOCITY = 30
 @export var fly_amount = 0 # 1 means fully flying
 @export var drag = .975
 @export var dirtMover:DirtMover
 @export var light:Light3D
+@export var mouth:Node3D
 var gravity = 40
 var grapplerScene = preload("res://scenes/Grappler.tscn")
-var grappleCharge = 0.0
+var clickCharge = 0.0
 var _active_grappler:RigidBody3D
 var grappler_grappled = false
 var gear:set = set_gear, get = get_gear
@@ -17,7 +17,7 @@ var _gear = GRAPPLER
 var light_radius = 25.0
 var health = 10.0
 var max_health = 10.0
-var multi_jumps = 1
+var multi_jumps = 100
 var recent_jumps = 0
 var invincible:set=_set_invincible,get=_get_invincible
 var _invincible = false
@@ -43,14 +43,18 @@ func _physics_process(delta):
 				$RopeMesh.visible = true
 				if $RopeMesh.mesh.top_radius < 1.8:
 					$RopeMesh.mesh.top_radius += delta*.7
-					grappleCharge += delta
+					clickCharge += delta
 		elif gear == DIRTMOVER:
 			pass
+			
+	if Input.is_action_just_pressed("ui_left"):
+		$Mesh.scale = Vector3(-1,1,1)
+	if Input.is_action_just_pressed("ui_right"):
+		$Mesh.scale = Vector3(1,1,1)
 	var lr_control = 1
 	if not is_on_floor():
 		lr_control = .5
 	# Add the gravity.
-
 	# Get the input direction and handle the movement/deceleration.
 	# As good practice, you should replace UI actions with custom gameplay actions.
 	var input_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
@@ -97,8 +101,8 @@ func shoot_grappler():
 	get_parent().add_child(newGrappler)
 	newGrappler.global_position = global_position
 	var dir = get_viewport().get_mouse_position() - get_viewport().size/2.0
-	newGrappler.apply_central_impulse(Vector3(dir.x,-dir.y,0)*grappleCharge*.1 + velocity)
-	grappleCharge = 0
+	newGrappler.apply_central_impulse(Vector3(dir.x,-dir.y,0)*clickCharge*.1 + velocity)
+	clickCharge = 0
 	_active_grappler = newGrappler
 
 func on_grappler_grappled():

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://b10db6mmbitny"]
+[gd_scene load_steps=25 format=3 uid="uid://b10db6mmbitny"]
 
 [ext_resource type="PackedScene" uid="uid://cc24ri8n7xvoc" path="res://scenes/map_builder.tscn" id="1_677ns"]
 [ext_resource type="Script" path="res://scripts/GameWorld.gd" id="1_t1j4s"]
@@ -27,6 +27,18 @@ material = SubResource("StandardMaterial3D_noj3k")
 radius = 2.0
 height = 4.0
 
+[sub_resource type="Gradient" id="Gradient_nb6t6"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.266234, 0.694805, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.347817, 0.347817, 0.347817, 1, 0.720467, 0.720468, 0.720467, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_0jug6"]
+resource_local_to_scene = true
+gradient = SubResource("Gradient_nb6t6")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jgg6a"]
 sky_top_color = Color(0.172549, 0.0862745, 0.027451, 1)
 sky_horizon_color = Color(0.12549, 0.0588235, 0.0156863, 1)
@@ -46,12 +58,12 @@ tonemap_mode = 2
 
 [sub_resource type="Theme" id="Theme_8ectw"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_go24w"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_kc804"]
 viewport_path = NodePath("MapBuilder/SubViewport")
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_tt7rd"]
 resource_local_to_scene = true
-diffuse_texture = SubResource("ViewportTexture_go24w")
+diffuse_texture = SubResource("ViewportTexture_kc804")
 
 [node name="GameWorld" type="Node3D"]
 script = ExtResource("1_t1j4s")
@@ -83,6 +95,9 @@ collision_layer = 0
 collision_mask = 0
 
 [node name="MapBuilder" parent="." instance=ExtResource("1_677ns")]
+
+[node name="centerOpener" parent="MapBuilder/SubViewport/Control" index="2"]
+texture = SubResource("GradientTexture2D_0jug6")
 
 [node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("target")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.32, 32)
@@ -164,13 +179,13 @@ layout_mode = 2
 text = "You're doing great"
 
 [node name="Preview" type="TextureRect" parent="UI/VBoxContainer/HBoxContainer"]
-visible = false
 show_behind_parent = true
 top_level = true
 custom_minimum_size = Vector2(250, 250)
 layout_mode = 2
 texture = SubResource("CanvasTexture_tt7rd")
 expand_mode = 1
+flip_v = true
 
 [node name="Buttons" type="GridContainer" parent="UI/VBoxContainer"]
 layout_mode = 2

@@ -20,6 +20,7 @@ rings = 16
 radius = 15.0
 
 [node name="Enemy" type="RigidBody3D"]
+collision_layer = 0
 input_ray_pickable = false
 axis_lock_linear_z = true
 axis_lock_angular_x = true

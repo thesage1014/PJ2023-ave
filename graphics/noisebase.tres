@@ -1,3 +1,13 @@
 [gd_resource type="FastNoiseLite" format=3 uid="uid://7ga8yhnc2kgd"]
 
 [resource]
+noise_type = 0
+frequency = 0.02
+fractal_type = 3
+fractal_ping_pong_strength = 0.74
+domain_warp_amplitude = 14.535
+domain_warp_frequency = 0.01
+domain_warp_fractal_type = 2
+domain_warp_fractal_octaves = 4
+domain_warp_fractal_lacunarity = 2.26
+domain_warp_fractal_gain = 1.055
