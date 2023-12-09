@@ -11,7 +11,7 @@ func _ready():
 	var level = Singleton.enemy_level
 	jumpStrength = 13 + level*4
 	attackStrength = level*1.25
-	jumpCooldown = 2.5 - level*.1
+	jumpCooldown = 2.5 - level*.2
 	roll_strength = .02 + level*.02
 
 func _physics_process(delta):

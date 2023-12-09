@@ -9,9 +9,9 @@ enum {GRAPPLER,DIRTMOVER,SAPPHIRE}
 @export var mouth:Node3D
 @export var mouseHelper:Area3D
 @export var mouse_max_distance:float = 14
-@export var grapple_power:float = 1.0
 @export var gear_pointer_sprites:Array[CompressedTexture2D]
 @export var attack_strength:float = 1
+@export var multi_jumps = 1
 
 var gravity = 40
 var grapplerScene = preload("res://scenes/Grappler.tscn")
@@ -23,7 +23,6 @@ var _gear = GRAPPLER
 var light_radius = 25.0
 var health = 10.0
 var max_health = 10.0
-var multi_jumps = 1
 var recent_jumps = 0
 var invincible:set=_set_invincible,get=_get_invincible
 var _invincible = false
@@ -33,6 +32,9 @@ var _mouse_delta = Vector2(0,0)
 
 func _enter_tree():
 	Singleton.player = self
+	
+func _ready():
+	gear = GRAPPLER
 
 func _process(delta):
 	mouseHelper.rotation.z = Vector2(mouseHelper.position.x,mouseHelper.position.y).angle()
@@ -54,14 +56,14 @@ func _physics_process(delta):
 		if gear == GRAPPLER:
 			if grappler_grappled:
 				var dir = Vec.xy0(_active_grappler.global_position - global_position).normalized()
-				velocity += dir
+				velocity += dir * (Singleton.grapple_level*.25+1.0)
 			elif !_active_grappler:
 				$RopeMesh.visible = true
 				if $RopeMesh.mesh.top_radius < 1.8:
 					$RopeMesh.mesh.top_radius += delta*.7
-					clickCharge += delta
+					clickCharge = max(.5,clickCharge + delta*(1+Singleton.grapple_level*.1))
 		if gear == SAPPHIRE:
-			Singleton.camera_offset += Vector2(mouseHelper.position.x, mouseHelper.position.y) * (Singleton.sapphire_level+1) * .02
+			Singleton.camera_offset += Vector2(mouseHelper.position.x, mouseHelper.position.y) * (Singleton.sapphire_level+1) * .03
 	
 	
 	$Mesh.scale = Vector3(sign(mouseHelper.position.x+.00001),1,1)
@@ -135,7 +137,7 @@ func shoot_grappler():
 	get_parent().add_child(newGrappler)
 	newGrappler.global_position = mouth.global_position
 	var dir = Vec.xy0(mouseHelper.position)
-	newGrappler.apply_central_impulse(dir*clickCharge*grapple_power + velocity)
+	newGrappler.apply_central_impulse(dir*clickCharge*get_grapple_power() + velocity)
 	clickCharge = 0
 	_active_grappler = newGrappler
 
@@ -201,3 +203,5 @@ func _set_invincible(value):
 	_invincible = value
 func _get_invincible():
 	return _invincible or invince_timer > 0
+func get_grapple_power():
+	return 1.0 + Singleton.grapple_level*.2

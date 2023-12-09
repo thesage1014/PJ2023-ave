@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://cc24ri8n7xvoc"]
+[gd_scene load_steps=22 format=3 uid="uid://cc24ri8n7xvoc"]
 
 [ext_resource type="Script" path="res://scripts/MapBuilder.gd" id="1_1vfao"]
 [ext_resource type="MeshLibrary" uid="uid://ftt25vrnopyd" path="res://models/gridMapTiles.tres" id="2_pwytv"]
@@ -8,7 +8,6 @@
 [ext_resource type="Material" uid="uid://bsypapet4r4jl" path="res://graphics/multiply.tres" id="4_eei50"]
 [ext_resource type="Texture2D" uid="uid://fkgxk6amysbf" path="res://graphics/bridge_arc.png" id="4_fcgvd"]
 [ext_resource type="Material" uid="uid://bxnqbo2a5ctlt" path="res://graphics/alpha.tres" id="5_ee8yb"]
-[ext_resource type="PackedScene" uid="uid://bvqphdimvymju" path="res://scenes/Exit.tscn" id="5_vw4ej"]
 [ext_resource type="Texture2D" uid="uid://cab4kilovj4iq" path="res://graphics/ground_normal.png" id="9_k5wju"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_uk25g"]
@@ -174,6 +173,3 @@ light_color = Color(0.462745, 0.901961, 1, 1)
 light_energy = 20.0
 omni_range = 1024.0
 omni_attenuation = 0.554785
-
-[node name="Exit" parent="." instance=ExtResource("5_vw4ej")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 448, 448, 0)

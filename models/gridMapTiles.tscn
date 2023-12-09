@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://c341qvyl03qjp"]
+[gd_scene load_steps=19 format=3 uid="uid://c341qvyl03qjp"]
 
 [ext_resource type="Texture2D" uid="uid://ld7eragf1yyt" path="res://graphics/ground.png" id="1_rut5o"]
 [ext_resource type="Texture2D" uid="uid://bwpdneak8h5lm" path="res://graphics/ground_dis.png" id="2_bkf0i"]
@@ -40,6 +40,25 @@ normal_texture = ExtResource("4_vtw85")
 [sub_resource type="QuadMesh" id="QuadMesh_glgvj"]
 material = SubResource("StandardMaterial3D_uc7sr")
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ro14y"]
+load_path = "res://.godot/imported/rock.png-549029607f28d12fb9bc48ede2f84117.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_rpjk4"]
+load_path = "res://.godot/imported/rock_normal.png-9766742f91f5c27f6ea01c87bd7ead60.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ohtxx"]
+transparency = 1
+blend_mode = 1
+no_depth_test = true
+albedo_texture = SubResource("CompressedTexture2D_ro14y")
+roughness = 0.26
+normal_enabled = true
+normal_texture = SubResource("CompressedTexture2D_rpjk4")
+
+[sub_resource type="QuadMesh" id="QuadMesh_xhvjg"]
+material = SubResource("StandardMaterial3D_ohtxx")
+size = Vector2(1.1, 1.1)
+
 [node name="GridMapTiles" type="Node3D"]
 
 [node name="air" type="MeshInstance3D" parent="."]
@@ -71,4 +90,12 @@ mesh = SubResource("QuadMesh_glgvj")
 [node name="StaticBody3D" type="StaticBody3D" parent="stone"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="stone/StaticBody3D"]
+shape = SubResource("BoxShape3D_48x7j")
+
+[node name="glowHelper" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_xhvjg")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="glowHelper"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="glowHelper/StaticBody3D"]
 shape = SubResource("BoxShape3D_48x7j")

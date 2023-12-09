@@ -3,7 +3,6 @@
 [resource]
 noise_type = 0
 frequency = 0.02
-fractal_type = 3
 fractal_ping_pong_strength = 0.74
 domain_warp_amplitude = 14.535
 domain_warp_frequency = 0.01

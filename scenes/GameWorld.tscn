@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://b10db6mmbitny"]
+[gd_scene load_steps=24 format=3 uid="uid://b10db6mmbitny"]
 
 [ext_resource type="PackedScene" uid="uid://cc24ri8n7xvoc" path="res://scenes/map_builder.tscn" id="1_677ns"]
 [ext_resource type="Script" path="res://scripts/GameWorld.gd" id="1_t1j4s"]
@@ -28,6 +28,24 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_7w30q"]
+load_path = "res://.godot/imported/liz.png-3c5724b511e8b3390c249bd1eef323af.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_5o2cb"]
+load_path = "res://.godot/imported/liz_normal.png-07069c92a1e80a2e61aa4c08bfa80b6f.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_is3r6"]
+transparency = 1
+albedo_color = Color(0.0470588, 0.419608, 1, 0.592157)
+albedo_texture = SubResource("CompressedTexture2D_7w30q")
+normal_enabled = true
+normal_texture = SubResource("CompressedTexture2D_5o2cb")
+texture_filter = 4
+
+[sub_resource type="QuadMesh" id="QuadMesh_0xkbv"]
+material = SubResource("StandardMaterial3D_is3r6")
+size = Vector2(4, 4)
+
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jgg6a"]
 sky_top_color = Color(0.172549, 0.0862745, 0.027451, 1)
 sky_horizon_color = Color(0.12549, 0.0588235, 0.0156863, 1)
@@ -46,13 +64,6 @@ ambient_light_energy = 0.0
 tonemap_mode = 2
 
 [sub_resource type="Theme" id="Theme_8ectw"]
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_7634e"]
-viewport_path = NodePath("MapBuilder/SubViewport")
-
-[sub_resource type="CanvasTexture" id="CanvasTexture_tt7rd"]
-resource_local_to_scene = true
-diffuse_texture = SubResource("ViewportTexture_7634e")
 
 [node name="GameWorld" type="Node3D"]
 script = ExtResource("1_t1j4s")
@@ -83,6 +94,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.32, 32)
 current = true
 script = ExtResource("2_thc0g")
 target = NodePath("../Player")
+
+[node name="SappPlayerMesh" type="MeshInstance3D" parent="Camera3D"]
+mesh = SubResource("QuadMesh_0xkbv")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Camera3D/SappPlayerMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.3658)
+light_color = Color(0.152941, 1, 0.886275, 1)
+omni_range = 25.0
+omni_attenuation = 0.659754
 
 [node name="Player" parent="." node_paths=PackedStringArray("dirtMover", "light") instance=ExtResource("3_f7fbq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 64, 0)
@@ -163,7 +183,6 @@ show_behind_parent = true
 top_level = true
 custom_minimum_size = Vector2(250, 250)
 layout_mode = 2
-texture = SubResource("CanvasTexture_tt7rd")
 expand_mode = 1
 flip_v = true
 

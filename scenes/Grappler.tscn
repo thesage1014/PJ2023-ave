@@ -12,7 +12,7 @@ material = SubResource("StandardMaterial3D_7wkkd")
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_dnvqg"]
 height = 1.395
-radius = 0.537
+radius = 0.697
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xgllu"]
 albedo_color = Color(0.270588, 0.105882, 0.113725, 1)

@@ -21,14 +21,17 @@ func _physics_process(delta):
 func _on_body_entered(body):
 	print(body)
 	if body is GridMap:
+		linear_velocity = Vector3.ZERO
 		grappled = true
-		collision_layer = 0
-		collision_mask = 0
-		freeze = true
+		gravity_scale = 0
+		linear_damp = 1
+		#collision_layer = 0
+		#collision_mask = 0
+		#freeze = true
 		Singleton.player.on_grappler_grappled()
 	elif body is Enemy:
 		Singleton.player.ungrapple()
 		body.hit_by_player(Singleton.player.attack_strength)
 
 func max_grapple_dist():
-	return Singleton.grapple_level * 5 + 15
+	return Singleton.grapple_level * 10 + 15

@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://d0kmj7onmugua" path="res://graphics/liz.png" id="2_c7f4p"]
 [ext_resource type="Texture2D" uid="uid://d34v6i5p3w8gd" path="res://graphics/liz_normal.png" id="3_enb5w"]
 [ext_resource type="Texture2D" uid="uid://d4gn05e3g7cjn" path="res://graphics/tongue_tip.png" id="4_du5ew"]
-[ext_resource type="Texture2D" uid="uid://baqip437wlvpa" path="res://graphics/icons/Sapphire Staff.png" id="4_qheat"]
+[ext_resource type="Texture2D" uid="uid://cvtm2p8vhv1vk" path="res://graphics/blank.png" id="4_jk8hs"]
 [ext_resource type="Texture2D" uid="uid://blbgu7i5lc5rs" path="res://graphics/icons/Shovel.png" id="5_yswry"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ko8jc"]
@@ -55,7 +55,7 @@ floor_snap_length = 0.5
 script = ExtResource("1_ocak7")
 mouth = NodePath("Mouth")
 mouseHelper = NodePath("MouseHelper")
-gear_pointer_sprites = Array[CompressedTexture2D]([ExtResource("4_du5ew"), ExtResource("5_yswry"), ExtResource("4_qheat")])
+gear_pointer_sprites = Array[CompressedTexture2D]([ExtResource("4_du5ew"), ExtResource("5_yswry"), ExtResource("4_jk8hs")])
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.058)
