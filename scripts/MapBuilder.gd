@@ -1,7 +1,7 @@
 class_name MapBuilder extends Node3D
 @export var noiseViewport:SubViewport
 @export var gridMap:GridMap
-@export var mapSize = Vector2i(512,512)
+@export var mapSize = Vector2i(1024,512)
 var lineScene = preload("res://scenes/line_2d.tscn")
 var blobScene = preload("res://scenes/blob.tscn")
 var powerupScene = preload("res://scenes/Powerup.tscn")

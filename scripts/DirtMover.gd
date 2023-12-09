@@ -31,7 +31,7 @@ func _on_static_body_3d_input_event(camera, event, position, normal, shape_idx):
 					for j in range(moverSize):
 						var ipos = Vector3i(position-Vector3(.5,.5,0))+Vector3i(i,j,-1)
 						var sample = helperGM.get_cell_item(Vector3i(i,j,0))
-						if gridMap.get_cell_item(ipos) != 1:
+						if gridMap.get_cell_item(ipos) != 1 and sample != -1:
 							gridMap.set_cell_item(ipos,sample)
 				helperGM.clear()
 

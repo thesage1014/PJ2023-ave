@@ -44,7 +44,7 @@ script = ExtResource("1_ocak7")
 mouth = NodePath("Mouth")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.150206, 0, 0.0577435)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.058)
 layers = 3
 mesh = SubResource("QuadMesh_rj0fp")
 
@@ -69,4 +69,4 @@ light_energy = 0.42
 omni_range = 1.013
 
 [node name="Mouth" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.300411, 1.40192, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.402, 0)

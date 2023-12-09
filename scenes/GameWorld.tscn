@@ -179,6 +179,7 @@ layout_mode = 2
 text = "You're doing great"
 
 [node name="Preview" type="TextureRect" parent="UI/VBoxContainer/HBoxContainer"]
+visible = false
 show_behind_parent = true
 top_level = true
 custom_minimum_size = Vector2(250, 250)

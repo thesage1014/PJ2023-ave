@@ -17,7 +17,7 @@ var _gear = GRAPPLER
 var light_radius = 25.0
 var health = 10.0
 var max_health = 10.0
-var multi_jumps = 100
+var multi_jumps = 1
 var recent_jumps = 0
 var invincible:set=_set_invincible,get=_get_invincible
 var _invincible = false
