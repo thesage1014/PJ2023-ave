@@ -7,6 +7,12 @@ enum {GRAPPLER,DIRTMOVER,SAPPHIRE}
 @export var dirtMover:DirtMover
 @export var light:Light3D
 @export var mouth:Node3D
+@export var mouseHelper:Area3D
+@export var mouse_max_distance:float = 14
+@export var grapple_power:float = 1.0
+@export var gear_pointer_sprites:Array[CompressedTexture2D]
+@export var attack_strength:float = 1
+
 var gravity = 40
 var grapplerScene = preload("res://scenes/Grappler.tscn")
 var clickCharge = 0.0
@@ -23,17 +29,27 @@ var invincible:set=_set_invincible,get=_get_invincible
 var _invincible = false
 var invince_timer = 0.0
 var _shoot_grappler = false
+var _mouse_delta = Vector2(0,0)
 
 func _enter_tree():
 	Singleton.player = self
 
 func _process(delta):
+	mouseHelper.rotation.z = Vector2(mouseHelper.position.x,mouseHelper.position.y).angle()
 	if invincible:
 		$Mesh.visible = int(Time.get_ticks_msec()/50)%2
 	else:
 		$Mesh.visible = true
 
 func _physics_process(delta):
+	if _mouse_delta != Vector2.ZERO:
+		mouseHelper.global_position += Vector3(_mouse_delta.x,-_mouse_delta.y,0)*.1
+		var mouseXY = Vector2(mouseHelper.position.x,mouseHelper.position.y)
+		if mouseXY.length() > mouse_max_distance:
+			var normXY = mouseXY.normalized()
+			mouseHelper.position.x = normXY.x * mouse_max_distance
+			mouseHelper.position.y = normXY.y * mouse_max_distance
+		_mouse_delta = Vector2.ZERO
 	if Input.is_action_pressed("left_mouse"):
 		if gear == GRAPPLER:
 			if grappler_grappled:
@@ -44,13 +60,11 @@ func _physics_process(delta):
 				if $RopeMesh.mesh.top_radius < 1.8:
 					$RopeMesh.mesh.top_radius += delta*.7
 					clickCharge += delta
-		elif gear == DIRTMOVER:
-			pass
-			
-	if Input.is_action_just_pressed("ui_left"):
-		$Mesh.scale = Vector3(-1,1,1)
-	if Input.is_action_just_pressed("ui_right"):
-		$Mesh.scale = Vector3(1,1,1)
+		if gear == SAPPHIRE:
+			Singleton.camera_offset += Vector2(mouseHelper.position.x, mouseHelper.position.y) * (Singleton.sapphire_level+1) * .02
+	
+	
+	$Mesh.scale = Vector3(sign(mouseHelper.position.x+.00001),1,1)
 	var lr_control = 1
 	if not is_on_floor():
 		lr_control = .5
@@ -94,14 +108,34 @@ func _physics_process(delta):
 	if health <= 0:
 		get_parent().rebuild_world()
 
+func _unhandled_input(event):
+	if event is InputEventMouseMotion:
+		var em = event as InputEventMouseMotion
+		
+		_mouse_delta += em.relative
+	elif event is InputEventMouseButton:
+		var me = event as InputEventMouseButton
+		if me.button_index == MOUSE_BUTTON_RIGHT:
+			if me.pressed:
+				ungrapple()
+			else:
+				pass
+		if me.button_index == MOUSE_BUTTON_LEFT:
+			if me.pressed:
+				pass
+			else:
+				Singleton.camera_offset = Vector2.ZERO
+				if gear == GRAPPLER and !_active_grappler:
+					_shoot_grappler = true
+
 func shoot_grappler():
 	$RopeMesh.visible = false
 	$RopeMesh.mesh.top_radius = .5
 	var newGrappler = grapplerScene.instantiate() as RigidBody3D
 	get_parent().add_child(newGrappler)
-	newGrappler.global_position = global_position
-	var dir = get_viewport().get_mouse_position() - get_viewport().size/2.0
-	newGrappler.apply_central_impulse(Vector3(dir.x,-dir.y,0)*clickCharge*.1 + velocity)
+	newGrappler.global_position = mouth.global_position
+	var dir = Vec.xy0(mouseHelper.position)
+	newGrappler.apply_central_impulse(dir*clickCharge*grapple_power + velocity)
 	clickCharge = 0
 	_active_grappler = newGrappler
 
@@ -116,6 +150,7 @@ func ungrapple():
 
 func set_gear(value):
 	_gear = value
+	mouseHelper.get_node("Mesh").mesh.material.albedo_texture = gear_pointer_sprites[value]
 	ungrapple()
 	dirtMover.clear()
 	if value == DIRTMOVER:
@@ -128,16 +163,17 @@ func get_gear():
 
 func on_powerup_hit(powerup:Powerup):
 	if powerup.type == powerup.powerup_type.ROPE:
-		Singleton.max_grapple_dist += 6
+		Singleton.grapple_level += 1
 	if powerup.type == powerup.powerup_type.POT:
 		health = minf(max_health,health + 5.0)
 	if powerup.type == powerup.powerup_type.LANTERN:
 		light_radius += 5
 		light.omni_range = light_radius
 	if powerup.type == powerup.powerup_type.MAXHEART:
-		max_health += 5
+		Singleton.maxhearts_level += 1
+		max_health = 10+5*Singleton.maxhearts_level
 	if powerup.type == powerup.powerup_type.SHOVEL:
-		dirtMover.moverSize += 1
+		Singleton.shovel_level += 1
 	if powerup.type == powerup.powerup_type.BOOTS:
 		multi_jumps += 1
 	powerup.queue_free()
@@ -155,25 +191,11 @@ func on_enemy_hit(enemy:Enemy):
 func exit():
 	(get_parent() as GameWorld).rebuild_world()
 
+
+
 func input_plane_event(camera, event, position, normal, shape_idx):
-	#if gear == GRAPPLER:
-		#if !_active_grappler and Input.is_action_just_released("left_mouse"):
-			#shoot_grappler()
-		#if Input.is_action_just_pressed("right_mouse"):
-			#ungrapple()
-	if event is InputEventMouseButton:
-		var me = event as InputEventMouseButton
-		if me.button_index == MOUSE_BUTTON_RIGHT:
-			if me.pressed:
-				ungrapple()
-			else:
-				pass
-		if me.button_index == MOUSE_BUTTON_LEFT:
-			if me.pressed:
-				pass
-			else:
-				if !_active_grappler:
-					_shoot_grappler = true
+	pass
+	
 
 func _set_invincible(value):
 	_invincible = value

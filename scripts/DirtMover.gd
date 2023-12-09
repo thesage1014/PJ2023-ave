@@ -1,18 +1,24 @@
 class_name DirtMover extends MeshInstance3D
 @onready var gridMap:GridMap = get_parent().find_child("GridMap")
 @export var helperGM:GridMap
+var reticle:Area3D
 var last_input_position = Vector3.ZERO
 var moverSize = 2
-#func _ready():
+
+func _ready():
+	reticle = Singleton.instance.player.mouseHelper
 
 func _physics_process(delta):
+	moverSize = 2+Singleton.shovel_level
 	if Singleton.player.gear == Singleton.player.DIRTMOVER:
 		global_position = Vector3(round(last_input_position.x+.5),round(last_input_position.y+.5),0)
-		
+	
 
 
-func _on_static_body_3d_input_event(camera, event, position, normal, shape_idx):
-	last_input_position = position
+func _unhandled_input(event):
+	#var me = event as InputEventMouseMotion
+	var pos = reticle.global_position
+	last_input_position = pos
 	if Singleton.player.gear == Singleton.player.DIRTMOVER:
 		if event is InputEventMouseButton:
 			var mevent = event as InputEventMouseButton
@@ -20,7 +26,7 @@ func _on_static_body_3d_input_event(camera, event, position, normal, shape_idx):
 				helperGM.position = Vector3(-moverSize*.5,-moverSize*.5,-1)
 				for i in range(moverSize):
 					for j in range(moverSize):
-						var ipos = Vector3i(position-Vector3(0,0,0))+Vector3i(i,j,-1)
+						var ipos = Vector3i(pos-Vector3(0,0,0))+Vector3i(i,j,-1)
 						var sample = gridMap.get_cell_item(ipos)
 						if sample >= 3:
 							continue
@@ -30,7 +36,7 @@ func _on_static_body_3d_input_event(camera, event, position, normal, shape_idx):
 				helperGM.position = Vector3(-moverSize*.5,-moverSize*.5,-1)
 				for i in range(moverSize):
 					for j in range(moverSize):
-						var ipos = Vector3i(position-Vector3(0,0,0))+Vector3i(i,j,-1)
+						var ipos = Vector3i(pos-Vector3(0,0,0))+Vector3i(i,j,-1)
 						var sample = helperGM.get_cell_item(Vector3i(i,j,0))
 						var target_item = gridMap.get_cell_item(ipos)
 						if target_item != 3 and sample > 0:

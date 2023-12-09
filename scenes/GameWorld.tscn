@@ -1,31 +1,20 @@
-[gd_scene load_steps=25 format=3 uid="uid://b10db6mmbitny"]
+[gd_scene load_steps=22 format=3 uid="uid://b10db6mmbitny"]
 
 [ext_resource type="PackedScene" uid="uid://cc24ri8n7xvoc" path="res://scenes/map_builder.tscn" id="1_677ns"]
 [ext_resource type="Script" path="res://scripts/GameWorld.gd" id="1_t1j4s"]
+[ext_resource type="PackedScene" uid="uid://di7tigje6i4x8" path="res://scenes/DirtMover.tscn" id="2_aamiv"]
 [ext_resource type="Script" path="res://scenes/CameraFollower.gd" id="2_thc0g"]
-[ext_resource type="MeshLibrary" uid="uid://ftt25vrnopyd" path="res://models/gridMapTiles.tres" id="2_xfuou"]
 [ext_resource type="PackedScene" uid="uid://cyh3yf1kavtqb" path="res://scenes/Player.tscn" id="3_f7fbq"]
-[ext_resource type="Script" path="res://scripts/DirtMover.gd" id="4_6sp7f"]
 [ext_resource type="Script" path="res://scripts/UI.gd" id="7_mhksk"]
 [ext_resource type="Theme" uid="uid://cbnalb0sghq1p" path="res://baseTheme.tres" id="8_5125l"]
 [ext_resource type="ButtonGroup" uid="uid://cyjdespgwd4av" path="res://scenes/ui_button_group.tres" id="8_x3ldf"]
-[ext_resource type="Texture2D" uid="uid://d3tsryxwgqhl0" path="res://graphics/icons/rope_icon.png" id="9_kdim1"]
+[ext_resource type="Texture2D" uid="uid://d4gn05e3g7cjn" path="res://graphics/tongue_tip.png" id="9_67wgf"]
 [ext_resource type="Script" path="res://scripts/ItemButton.gd" id="10_kvmli"]
 [ext_resource type="Texture2D" uid="uid://blbgu7i5lc5rs" path="res://graphics/icons/Shovel.png" id="10_snjy3"]
 [ext_resource type="Texture2D" uid="uid://baqip437wlvpa" path="res://graphics/icons/Sapphire Staff.png" id="11_j26ml"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ak08y"]
 plane = Plane(0, 0, 1, 0)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_noj3k"]
-transparency = 1
-blend_mode = 1
-albedo_color = Color(0.278431, 0.745098, 0.603922, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_6rh3q"]
-material = SubResource("StandardMaterial3D_noj3k")
-radius = 2.0
-height = 4.0
 
 [sub_resource type="Gradient" id="Gradient_nb6t6"]
 interpolation_mode = 2
@@ -58,12 +47,12 @@ tonemap_mode = 2
 
 [sub_resource type="Theme" id="Theme_8ectw"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_kc804"]
-viewport_path = NodePath("SubViewport")
+[sub_resource type="ViewportTexture" id="ViewportTexture_7634e"]
+viewport_path = NodePath("MapBuilder/SubViewport")
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_tt7rd"]
 resource_local_to_scene = true
-diffuse_texture = SubResource("ViewportTexture_kc804")
+diffuse_texture = SubResource("ViewportTexture_7634e")
 
 [node name="GameWorld" type="Node3D"]
 script = ExtResource("1_t1j4s")
@@ -82,18 +71,7 @@ axis_lock_angular_z = true
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InputPlane"]
 shape = SubResource("WorldBoundaryShape3D_ak08y")
 
-[node name="DirtMover" type="MeshInstance3D" parent="." node_paths=PackedStringArray("helperGM")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.9643, 3.45045, 0)
-mesh = SubResource("SphereMesh_6rh3q")
-script = ExtResource("4_6sp7f")
-helperGM = NodePath("HelperGM")
-
-[node name="HelperGM" type="GridMap" parent="DirtMover"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
-mesh_library = ExtResource("2_xfuou")
-cell_size = Vector3(1, 1, 1)
-collision_layer = 0
-collision_mask = 0
+[node name="DirtMover" parent="." instance=ExtResource("2_aamiv")]
 
 [node name="MapBuilder" parent="." instance=ExtResource("1_677ns")]
 
@@ -204,7 +182,7 @@ action_mode = 0
 button_group = ExtResource("8_x3ldf")
 text = "
 1"
-icon = ExtResource("9_kdim1")
+icon = ExtResource("9_67wgf")
 alignment = 0
 icon_alignment = 2
 expand_icon = true
@@ -264,10 +242,10 @@ offset_right = 142.0
 offset_bottom = 23.0
 text = "HP"
 
-[connection signal="input_event" from="InputPlane" to="DirtMover" method="_on_static_body_3d_input_event"]
 [connection signal="input_event" from="InputPlane" to="Player" method="input_plane_event"]
 [connection signal="toggled" from="UI/VBoxContainer/Buttons/Tongue" to="UI/VBoxContainer/Buttons/Tongue" method="_on_toggled"]
 [connection signal="toggled" from="UI/VBoxContainer/Buttons/Shovel" to="UI/VBoxContainer/Buttons/Shovel" method="_on_toggled"]
 [connection signal="toggled" from="UI/VBoxContainer/Buttons/Sapphire" to="UI/VBoxContainer/Buttons/Sapphire" method="_on_toggled"]
 
+[editable path="DirtMover"]
 [editable path="MapBuilder"]

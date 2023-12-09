@@ -24,7 +24,7 @@ func _ready():
 	_place_lines()
 
 func _process(_delta):
-	if Input.is_action_just_pressed("ui_cancel"):
+	if Input.is_action_just_pressed("q"):
 		rebuild_world()
 	elif Time.get_ticks_msec()-_last_generated_time > 0.1 and !_generated:
 		await RenderingServer.frame_post_draw

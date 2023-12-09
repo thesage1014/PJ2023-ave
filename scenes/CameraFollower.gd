@@ -12,5 +12,5 @@ func _physics_process(delta):
 		position.z *= .9090909
 	
 	if target:
-		position.x = target.position.x
-		position.y = target.position.y
+		position.x = target.position.x + Singleton.camera_offset.x
+		position.y = target.position.y + Singleton.camera_offset.y

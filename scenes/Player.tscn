@@ -1,9 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://cyh3yf1kavtqb"]
+[gd_scene load_steps=16 format=3 uid="uid://cyh3yf1kavtqb"]
 
 [ext_resource type="Script" path="res://scripts/Player.gd" id="1_ocak7"]
 [ext_resource type="Texture2D" uid="uid://d0kmj7onmugua" path="res://graphics/liz.png" id="2_c7f4p"]
 [ext_resource type="Texture2D" uid="uid://d34v6i5p3w8gd" path="res://graphics/liz_normal.png" id="3_enb5w"]
 [ext_resource type="Texture2D" uid="uid://d4gn05e3g7cjn" path="res://graphics/tongue_tip.png" id="4_du5ew"]
+[ext_resource type="Texture2D" uid="uid://baqip437wlvpa" path="res://graphics/icons/Sapphire Staff.png" id="4_qheat"]
+[ext_resource type="Texture2D" uid="uid://blbgu7i5lc5rs" path="res://graphics/icons/Shovel.png" id="5_yswry"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ko8jc"]
 transparency = 1
@@ -35,13 +37,25 @@ height = 0.2
 radial_segments = 16
 rings = 1
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("mouth")]
+[sub_resource type="SphereShape3D" id="SphereShape3D_duwak"]
+radius = 0.219197
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0t3pp"]
+transparency = 1
+albedo_texture = ExtResource("5_yswry")
+
+[sub_resource type="QuadMesh" id="QuadMesh_x4rof"]
+material = SubResource("StandardMaterial3D_0t3pp")
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("mouth", "mouseHelper")]
 input_ray_pickable = false
 floor_constant_speed = true
 floor_max_angle = 1.58825
 floor_snap_length = 0.5
 script = ExtResource("1_ocak7")
 mouth = NodePath("Mouth")
+mouseHelper = NodePath("MouseHelper")
+gear_pointer_sprites = Array[CompressedTexture2D]([ExtResource("4_du5ew"), ExtResource("5_yswry"), ExtResource("4_qheat")])
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.058)
@@ -70,3 +84,13 @@ omni_range = 1.013
 
 [node name="Mouth" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.402, 0)
+
+[node name="MouseHelper" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.51)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MouseHelper"]
+shape = SubResource("SphereShape3D_duwak")
+
+[node name="Mesh" type="MeshInstance3D" parent="MouseHelper"]
+transform = Transform3D(0.672199, 0.740371, 0, -0.740371, 0.672199, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("QuadMesh_x4rof")
