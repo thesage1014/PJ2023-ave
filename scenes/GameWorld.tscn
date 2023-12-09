@@ -59,7 +59,7 @@ tonemap_mode = 2
 [sub_resource type="Theme" id="Theme_8ectw"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_kc804"]
-viewport_path = NodePath("MapBuilder/SubViewport")
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_tt7rd"]
 resource_local_to_scene = true
@@ -82,10 +82,11 @@ axis_lock_angular_z = true
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InputPlane"]
 shape = SubResource("WorldBoundaryShape3D_ak08y")
 
-[node name="DirtMover" type="MeshInstance3D" parent="."]
+[node name="DirtMover" type="MeshInstance3D" parent="." node_paths=PackedStringArray("helperGM")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.9643, 3.45045, 0)
 mesh = SubResource("SphereMesh_6rh3q")
 script = ExtResource("4_6sp7f")
+helperGM = NodePath("HelperGM")
 
 [node name="HelperGM" type="GridMap" parent="DirtMover"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)

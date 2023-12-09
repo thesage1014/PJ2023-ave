@@ -1,7 +1,9 @@
 class_name MapBuilder extends Node3D
 @export var noiseViewport:SubViewport
 @export var gridMap:GridMap
-@export var mapSize = Vector2i(1024,512)
+@export var mapSize = Vector2i(512,512)
+@export var drawThreshold = 0.0
+@export var drawBiasMultiplier = 4.0
 var lineScene = preload("res://scenes/line_2d.tscn")
 var blobScene = preload("res://scenes/blob.tscn")
 var powerupScene = preload("res://scenes/Powerup.tscn")
@@ -34,7 +36,7 @@ func _process(_delta):
 			for y in range(mapSize.y):
 				var pos = Vector2i(x,y)
 				var sample = image.get_pixelv(pos).r
-				gridMap.set_cell_item(Vector3i(x,y,0),clamp(sample*6-2.5,-1,1))
+				gridMap.set_cell_item(Vector3i(x,y,0),clamp(sample*drawBiasMultiplier-drawThreshold,-1,3))
 				
 			
 

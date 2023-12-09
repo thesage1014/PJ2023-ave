@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://c341qvyl03qjp"]
+[gd_scene load_steps=15 format=3 uid="uid://c341qvyl03qjp"]
 
 [ext_resource type="Texture2D" uid="uid://ld7eragf1yyt" path="res://graphics/ground.png" id="1_rut5o"]
 [ext_resource type="Texture2D" uid="uid://bwpdneak8h5lm" path="res://graphics/ground_dis.png" id="2_bkf0i"]
@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://c4bcdltw7s31l" path="res://graphics/rock.png" id="2_uwe0d"]
 [ext_resource type="Texture2D" uid="uid://il55ni3g4okd" path="res://graphics/rock_normal.png" id="4_vtw85"]
 [ext_resource type="Texture2D" uid="uid://crxbwdjubxuso" path="res://graphics/rocky_ground.png" id="6_0g55d"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_8xk3k"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nf6yy"]
 albedo_texture = ExtResource("1_rut5o")
@@ -20,15 +22,6 @@ material = SubResource("StandardMaterial3D_nf6yy")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_48x7j"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uc7sr"]
-albedo_texture = ExtResource("2_uwe0d")
-roughness = 0.26
-normal_enabled = true
-normal_texture = ExtResource("4_vtw85")
-
-[sub_resource type="QuadMesh" id="QuadMesh_glgvj"]
-material = SubResource("StandardMaterial3D_uc7sr")
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q883m"]
 albedo_texture = ExtResource("6_0g55d")
 roughness = 0.26
@@ -38,7 +31,19 @@ normal_texture = ExtResource("2_oki82")
 [sub_resource type="QuadMesh" id="QuadMesh_coe34"]
 material = SubResource("StandardMaterial3D_q883m")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uc7sr"]
+albedo_texture = ExtResource("2_uwe0d")
+roughness = 0.26
+normal_enabled = true
+normal_texture = ExtResource("4_vtw85")
+
+[sub_resource type="QuadMesh" id="QuadMesh_glgvj"]
+material = SubResource("StandardMaterial3D_uc7sr")
+
 [node name="GridMapTiles" type="Node3D"]
+
+[node name="air" type="MeshInstance3D" parent="."]
+mesh = SubResource("ArrayMesh_8xk3k")
 
 [node name="dirt" type="MeshInstance3D" parent="."]
 visible = false
@@ -50,6 +55,15 @@ skeleton = NodePath("../stone")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="dirt/StaticBody3D"]
 shape = SubResource("BoxShape3D_48x7j")
 
+[node name="rockydirt" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("QuadMesh_coe34")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="rockydirt"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="rockydirt/StaticBody3D"]
+shape = SubResource("BoxShape3D_48x7j")
+
 [node name="stone" type="MeshInstance3D" parent="."]
 visible = false
 mesh = SubResource("QuadMesh_glgvj")
@@ -57,12 +71,4 @@ mesh = SubResource("QuadMesh_glgvj")
 [node name="StaticBody3D" type="StaticBody3D" parent="stone"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="stone/StaticBody3D"]
-shape = SubResource("BoxShape3D_48x7j")
-
-[node name="rockydirt" type="MeshInstance3D" parent="."]
-mesh = SubResource("QuadMesh_coe34")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="rockydirt"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="rockydirt/StaticBody3D"]
 shape = SubResource("BoxShape3D_48x7j")
