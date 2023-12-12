@@ -1,13 +1,10 @@
-[gd_scene load_steps=22 format=3 uid="uid://cc24ri8n7xvoc"]
+[gd_scene load_steps=12 format=3 uid="uid://cc24ri8n7xvoc"]
 
 [ext_resource type="Script" path="res://scripts/MapBuilder.gd" id="1_1vfao"]
 [ext_resource type="MeshLibrary" uid="uid://ftt25vrnopyd" path="res://models/gridMapTiles.tres" id="2_pwytv"]
 [ext_resource type="FastNoiseLite" uid="uid://7ga8yhnc2kgd" path="res://graphics/noisebase.tres" id="3_bpcyi"]
 [ext_resource type="Material" uid="uid://dt3c78grio1lj" path="res://graphics/add.tres" id="3_iwryc"]
 [ext_resource type="Gradient" uid="uid://ddrv3cx82eset" path="res://graphics/jumbo_vignette.tres" id="4_1tjm7"]
-[ext_resource type="Material" uid="uid://bsypapet4r4jl" path="res://graphics/multiply.tres" id="4_eei50"]
-[ext_resource type="Texture2D" uid="uid://fkgxk6amysbf" path="res://graphics/bridge_arc.png" id="4_fcgvd"]
-[ext_resource type="Material" uid="uid://bxnqbo2a5ctlt" path="res://graphics/alpha.tres" id="5_ee8yb"]
 [ext_resource type="Texture2D" uid="uid://cab4kilovj4iq" path="res://graphics/ground_normal.png" id="9_k5wju"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_uk25g"]
@@ -19,18 +16,6 @@ noise = ExtResource("3_bpcyi")
 gradient = ExtResource("4_1tjm7")
 fill = 2
 fill_from = Vector2(0.5, 0.5)
-
-[sub_resource type="Gradient" id="Gradient_nb6t6"]
-interpolation_mode = 2
-offsets = PackedFloat32Array(0, 0.266234, 0.694805, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.347817, 0.347817, 0.347817, 1, 0.720467, 0.720468, 0.720467, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_ouqck"]
-resource_local_to_scene = true
-gradient = SubResource("Gradient_nb6t6")
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(1, 0.5)
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_4yrtk"]
 load_path = "res://.godot/imported/rock.png-549029607f28d12fb9bc48ede2f84117.ctex"
@@ -47,30 +32,12 @@ uv1_triplanar = true
 material = SubResource("StandardMaterial3D_l2h1s")
 size = Vector2(600, 600)
 
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_uxrvw"]
-load_path = "res://.godot/imported/rock.png-549029607f28d12fb9bc48ede2f84117.ctex"
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_spto8"]
-load_path = "res://.godot/imported/rock.png-549029607f28d12fb9bc48ede2f84117.ctex"
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_q66qj"]
-albedo_texture = SubResource("CompressedTexture2D_uxrvw")
-normal_enabled = true
-normal_texture = SubResource("CompressedTexture2D_spto8")
-uv1_triplanar = true
-
-[sub_resource type="QuadMesh" id="QuadMesh_6u1dc"]
-material = SubResource("StandardMaterial3D_q66qj")
-size = Vector2(512, 512)
-
-[sub_resource type="QuadMesh" id="QuadMesh_f7myi"]
-material = SubResource("StandardMaterial3D_q66qj")
-size = Vector2(1536, 512)
-
-[node name="MapBuilder" type="Node3D" node_paths=PackedStringArray("noiseViewport", "gridMap")]
+[node name="MapBuilder" type="Node3D" node_paths=PackedStringArray("noiseViewport", "gridMap", "nodes_to_keep")]
 script = ExtResource("1_1vfao")
 noiseViewport = NodePath("SubViewport")
 gridMap = NodePath("World/GridMap")
+textures = Array[Dictionary]([{}])
+nodes_to_keep = [NodePath("SubViewport/Control/noise"), NodePath("SubViewport/Control/vignette"), NodePath("SubViewport"), NodePath("World"), NodePath("SubViewport/Control"), NodePath("World/GridMap"), NodePath("World/BACKGROUND"), NodePath("")]
 
 [node name="SubViewport" type="SubViewport" parent="."]
 render_target_clear_mode = 1
@@ -105,31 +72,6 @@ grow_vertical = 2
 texture = SubResource("GradientTexture2D_puocy")
 expand_mode = 1
 
-[node name="centerOpener" type="TextureRect" parent="SubViewport/Control"]
-material = ExtResource("4_eei50")
-layout_mode = 0
-offset_left = 256.0
-offset_top = 256.0
-offset_right = 256.0
-offset_bottom = 256.0
-scale = Vector2(8, 8)
-texture = SubResource("GradientTexture2D_ouqck")
-expand_mode = 1
-stretch_mode = 3
-
-[node name="bridge" type="TextureRect" parent="SubViewport/Control"]
-z_index = 3
-material = ExtResource("5_ee8yb")
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("4_fcgvd")
-expand_mode = 1
-flip_v = true
-
 [node name="World" type="Node3D" parent="."]
 
 [node name="GridMap" type="GridMap" parent="World"]
@@ -144,32 +86,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 256, 256, 350)
 [node name="BACKGROUND" type="MeshInstance3D" parent="World"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 256, 256, -2)
 mesh = SubResource("QuadMesh_v0a50")
-skeleton = NodePath("../OOB")
-
-[node name="OOB" type="MeshInstance3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -256, 256, 0)
-visible = false
-mesh = SubResource("QuadMesh_6u1dc")
-
-[node name="OOB2" type="MeshInstance3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 768, 256, 0)
-visible = false
-mesh = SubResource("QuadMesh_6u1dc")
-
-[node name="OOB3" type="MeshInstance3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 256, -256, 0)
-visible = false
-mesh = SubResource("QuadMesh_f7myi")
-
-[node name="OOB4" type="MeshInstance3D" parent="World"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 256, 768, 0)
-visible = false
-mesh = SubResource("QuadMesh_f7myi")
-
-[node name="templeLight" type="OmniLight3D" parent="World"]
-transform = Transform3D(0.962099, -0.0832458, 0.259684, -0.121145, 0.722671, 0.680493, -0.244314, -0.686161, 0.685196, 512, 512, 150)
-layers = 3
-light_color = Color(0.462745, 0.901961, 1, 1)
-light_energy = 20.0
-omni_range = 1024.0
-omni_attenuation = 0.554785
+skeleton = NodePath("")

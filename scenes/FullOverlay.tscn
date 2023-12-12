@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://bh0ws7fyxg023"]
+
+[ext_resource type="Material" uid="uid://bxnqbo2a5ctlt" path="res://graphics/alpha.tres" id="1_qolty"]
+[ext_resource type="Texture2D" uid="uid://fkgxk6amysbf" path="res://graphics/bridge_arc.png" id="2_qweje"]
+
+[node name="bridge" type="TextureRect"]
+z_index = 3
+material = ExtResource("1_qolty")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_qweje")
+expand_mode = 1
+flip_v = true

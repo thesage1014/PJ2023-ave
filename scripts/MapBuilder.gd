@@ -1,16 +1,22 @@
 class_name MapBuilder extends Node3D
-enum types {CAVES1,TEMPLE}
+enum types {CAVES1,TEMPLE,LEVEL1}
+@export var map_list:Array[Array] = [[types.LEVEL1,Vector2i(512,256)]]
 @export var map_type:types = types.CAVES1
 @export var noiseViewport:SubViewport
 @export var gridMap:GridMap
-@export var mapSize = Vector2i(256,160)
+@export var mapSize = Vector2i(777,512)
 @export var drawThreshold = 0.0
 @export var drawBiasMultiplier = 4.0
+@export var textures:Array[Dictionary]
+@export var nodes_to_keep:Array[Node]
+var current_map_index = 0
 var lineScene = preload("res://scenes/line_2d.tscn")
 var blobScene = preload("res://scenes/blob.tscn")
+var fullOverlayScene = preload("res://scenes/FullOverlay.tscn")
 var powerupScene = preload("res://scenes/Powerup.tscn")
 var enemyScene = preload("res://scenes/Enemy.tscn")
 var exitScene = preload("res://scenes/Exit.tscn")
+var lightScene = preload("res://scenes/map_light.tscn")
 var _generated = false
 var _last_generated_time = 0
 
@@ -18,13 +24,7 @@ func _enter_tree():
 	load("res://graphics/noisebase.tres").seed = randi()
 
 func _ready():
-	($World/BACKGROUND.mesh as QuadMesh).size = Vector2(mapSize.x+50,mapSize.y+50)
-	$World/BACKGROUND.global_position = Vector3(mapSize.x/2,mapSize.y/2,-2)
-	$SubViewport/Control/centerOpener.position = Vector2(mapSize/2)
-	$SubViewport/Control/centerOpener.scale = Vector2(mapSize/64)
-	noiseViewport.size = mapSize
-	(noiseViewport.get_node("Control/noise").texture.noise as FastNoiseLite).frequency = .01 * (max(mapSize.x,mapSize.y) / 512.0)
-	_generate_image()
+	load_map(0)
 
 func _process(_delta):
 	if Input.is_action_just_pressed("q"):
@@ -43,24 +43,37 @@ func _process(_delta):
 				
 			
 
-func _generate_image():
+func load_map(map_to_load:int):
+	if map_to_load >= 0 and map_to_load < map_list.size():
+		current_map_index = map_to_load
+		var map = map_list[map_to_load]
+		map_type = map[0]
+		mapSize = map[1]
+		_generate_world()
+	else:
+		printerr("tried to load illegal map index: " + str(map_to_load))
+
+func _generate_world():
+	
+	($World/BACKGROUND.mesh as QuadMesh).size = Vector2(mapSize.x+50,mapSize.y+50)
+	$World/BACKGROUND.global_position = Vector3(mapSize.x/2,mapSize.y/2,-2)
+	noiseViewport.size = mapSize
+	(noiseViewport.get_node("Control/noise").texture.noise as FastNoiseLite).frequency = .01 * (max(mapSize.x,mapSize.y) / 512.0)
 	
 	var numDests = pow((mapSize.x + mapSize.y)*.005,2)
 	print("random nodes to visit: " + str(numDests as int))
 	var points:Array[Vector2] = []
 	var margin = 64
 	
-	if map_type == types.CAVES1:
-		$SubViewport/Control/centerOpener.visible = false
-		$SubViewport/Control/bridge.visible = false
-		$World/templeLight.visible = false
+	if map_type == types.LEVEL1:
 		points.append(Vector2(margin,margin)) # start at bottom left
 		points.append(Vector2(mapSize.x-margin,mapSize.y-margin)) # end at top right
-		spawn_exit(Vector3(mapSize.x-margin,mapSize.y-margin,0))
+		spawn_exit(Vector3(mapSize.x-margin,mapSize.y-margin,0),0)
+	elif map_type == types.CAVES1:
+		points.append(Vector2(margin,margin)) # start at bottom left
+		points.append(Vector2(mapSize.x-margin,mapSize.y-margin)) # end at top right
+		spawn_exit(Vector3(mapSize.x-margin,mapSize.y-margin,0),0)
 	elif map_type == types.TEMPLE:
-		$SubViewport/Control/centerOpener.visible = true
-		$SubViewport/Control/bridge.visible = true
-		$World/templeLight.visible = true
 		points.append(Vector2(margin,margin)) # start at bottom left
 	
 	for i in range(numDests):
@@ -84,12 +97,14 @@ func rebuild_world():
 	Singleton.player.respawn()
 	gridMap.clear()
 	for _child in get_children():
-		if _child is Powerup or _child is Enemy or _child is Exit:
+		if !nodes_to_keep.has(_child):
+			print(_child)
 			_child.queue_free()
 	for _child in noiseViewport.get_children():
-		if _child is Line2D or _child is TextureRect:
+		if !nodes_to_keep.has(_child):
+			print(_child)
 			_child.queue_free()
-	_generate_image()
+	_generate_world()
 	load("res://graphics/noisebase.tres").seed = randi()
 	_generated = false
 
@@ -126,24 +141,35 @@ func spawn_powerup(targetPos):
 	newPowerup.type = randi_range(0,Powerup.powerup_type.size()-1)
 	add_child(newPowerup)
 	newPowerup.position = targetPos
+	return newPowerup
 
-func spawn_exit(targetPos):
+func spawn_light(targetPos):
+	var newLight = lightScene.instantiate() as OmniLight3D
+	add_child(newLight)
+	newLight.position = targetPos
+	return newLight
+
+func spawn_exit(targetPos, targetIndex):
 	var newExit = exitScene.instantiate() as Exit
-	#newExit.type = randi_range(0,Powerup.powerup_type.size()-1)
+	newExit.target_map_index = targetIndex
 	add_child(newExit)
 	newExit.position = targetPos
+	return newExit
 
 func spawn_enemy(targetPos):
 	var newEnemy = enemyScene.instantiate() as Enemy
 	add_child(newEnemy)
 	newEnemy.position = targetPos
+	return newEnemy
 
 func draw_line(points):
 	var newLine = lineScene.instantiate() as Line2D
 	noiseViewport.add_child(newLine)
 	newLine.points = PackedVector2Array(points)
+	return newLine
 
 func draw_blob(targetPos:Vector2):
 	var newBlob = blobScene.instantiate() as TextureRect
 	noiseViewport.add_child(newBlob)
 	newBlob.position = targetPos
+	return newBlob

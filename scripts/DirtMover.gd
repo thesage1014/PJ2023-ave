@@ -14,7 +14,7 @@ func _physics_process(delta):
 	moverSize = 2+Singleton.shovel_level
 	if Singleton.player.gear == Singleton.player.DIRTMOVER:
 		global_position = Vector3(floor(last_input_position.x),floor(last_input_position.y),0)
-		helperGM.global_position = (last_input_position + Vector3(-moverSize*.5,-moverSize*.5,-1)).floor()
+		helperGM.global_position = (last_input_position + Vector3(-moverSize*.5,-moverSize*.5,0)).floor() + Vector3(0,0,.1)
 		
 	
 

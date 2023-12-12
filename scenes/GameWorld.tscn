@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scenes/CameraFollower.gd" id="2_thc0g"]
 [ext_resource type="PackedScene" uid="uid://cyh3yf1kavtqb" path="res://scenes/Player.tscn" id="3_f7fbq"]
 [ext_resource type="Script" path="res://scripts/UI.gd" id="7_mhksk"]
+[ext_resource type="Texture2D" uid="uid://cw01hpkmav2ql" path="res://graphics/controls.png" id="7_nrk7b"]
 [ext_resource type="Theme" uid="uid://cbnalb0sghq1p" path="res://baseTheme.tres" id="8_5125l"]
 [ext_resource type="ButtonGroup" uid="uid://cyjdespgwd4av" path="res://scenes/ui_button_group.tres" id="8_x3ldf"]
 [ext_resource type="Texture2D" uid="uid://d4gn05e3g7cjn" path="res://graphics/tongue_tip.png" id="9_67wgf"]
@@ -15,18 +16,6 @@
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ak08y"]
 plane = Plane(0, 0, 1, 0)
-
-[sub_resource type="Gradient" id="Gradient_nb6t6"]
-interpolation_mode = 2
-offsets = PackedFloat32Array(0, 0.266234, 0.694805, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.347817, 0.347817, 0.347817, 1, 0.720467, 0.720468, 0.720467, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_0jug6"]
-resource_local_to_scene = true
-gradient = SubResource("Gradient_nb6t6")
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(1, 0.5)
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_7w30q"]
 load_path = "res://.godot/imported/liz.png-3c5724b511e8b3390c249bd1eef323af.ctex"
@@ -65,6 +54,9 @@ tonemap_mode = 2
 
 [sub_resource type="Theme" id="Theme_8ectw"]
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_vgx0p"]
+viewport_path = NodePath("MapBuilder/SubViewport")
+
 [node name="GameWorld" type="Node3D"]
 script = ExtResource("1_t1j4s")
 
@@ -84,10 +76,8 @@ shape = SubResource("WorldBoundaryShape3D_ak08y")
 
 [node name="DirtMover" parent="." instance=ExtResource("2_aamiv")]
 
-[node name="MapBuilder" parent="." instance=ExtResource("1_677ns")]
-
-[node name="centerOpener" parent="MapBuilder/SubViewport/Control" index="2"]
-texture = SubResource("GradientTexture2D_0jug6")
+[node name="MapBuilder" parent="." node_paths=PackedStringArray("nodes_to_keep") instance=ExtResource("1_677ns")]
+nodes_to_keep = [NodePath("SubViewport/Control/noise"), NodePath("SubViewport/Control/vignette"), NodePath("SubViewport"), NodePath("World"), NodePath("SubViewport/Control"), NodePath("World/GridMap"), NodePath("World/BACKGROUND"), null]
 
 [node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("target")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.32, 32)
@@ -119,8 +109,10 @@ remote_path = NodePath("../../PlayerLight")
 
 [node name="PlayerLight" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, 64, 6.37)
+light_color = Color(1, 0.882353, 0.819608, 1)
 light_cull_mask = 4294967293
 omni_range = 25.0
+omni_attenuation = 0.784584
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_8kjp8")
@@ -152,11 +144,31 @@ mouse_filter = 2
 theme = SubResource("Theme_8ectw")
 script = ExtResource("7_mhksk")
 player = NodePath("../Player")
-hp = NodePath("VBoxContainer/HBoxContainer2/ProgressBar")
-hpText = NodePath("VBoxContainer/HBoxContainer2/ProgressBar/HPText")
-buttons = NodePath("VBoxContainer/Buttons")
+hp = NodePath("BotBar/HBoxContainer2/ProgressBar")
+hpText = NodePath("BotBar/HBoxContainer2/ProgressBar/HPText")
+buttons = NodePath("BotBar/Buttons")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+[node name="Popup" type="VBoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+
+[node name="TextureRect" type="TextureRect" parent="UI/Popup"]
+layout_mode = 2
+texture = ExtResource("7_nrk7b")
+stretch_mode = 4
+
+[node name="Preview" type="TextureRect" parent="UI/Popup"]
+show_behind_parent = true
+top_level = true
+custom_minimum_size = Vector2(250, 250)
+layout_mode = 2
+texture = SubResource("ViewportTexture_vgx0p")
+expand_mode = 1
+flip_v = true
+
+[node name="BotBar" type="VBoxContainer" parent="UI"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -167,31 +179,23 @@ grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/BotBar"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 
-[node name="Label" type="Label" parent="UI/VBoxContainer/HBoxContainer"]
-visible = false
+[node name="Label" type="Label" parent="UI/BotBar/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 1
 text = "You're doing great"
 
-[node name="Preview" type="TextureRect" parent="UI/VBoxContainer/HBoxContainer"]
-visible = false
-show_behind_parent = true
-top_level = true
-custom_minimum_size = Vector2(250, 250)
-layout_mode = 2
-expand_mode = 1
-flip_v = true
-
-[node name="Buttons" type="GridContainer" parent="UI/VBoxContainer"]
+[node name="Buttons" type="GridContainer" parent="UI/BotBar"]
 layout_mode = 2
 size_flags_vertical = 10
 columns = 12
 
-[node name="Tongue" type="Button" parent="UI/VBoxContainer/Buttons"]
+[node name="Tongue" type="Button" parent="UI/BotBar/Buttons"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 focus_mode = 0
@@ -208,7 +212,7 @@ expand_icon = true
 script = ExtResource("10_kvmli")
 gear = "GRAPPLER"
 
-[node name="Shovel" type="Button" parent="UI/VBoxContainer/Buttons"]
+[node name="Shovel" type="Button" parent="UI/BotBar/Buttons"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 focus_mode = 0
@@ -224,7 +228,7 @@ expand_icon = true
 script = ExtResource("10_kvmli")
 gear = "DIRTMOVER"
 
-[node name="Sapphire" type="Button" parent="UI/VBoxContainer/Buttons"]
+[node name="Sapphire" type="Button" parent="UI/BotBar/Buttons"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 focus_mode = 0
@@ -240,12 +244,12 @@ expand_icon = true
 script = ExtResource("10_kvmli")
 gear = "SAPPHIRE"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="UI/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="UI/BotBar"]
 layout_mode = 2
 size_flags_vertical = 10
 mouse_filter = 2
 
-[node name="ProgressBar" type="ProgressBar" parent="UI/VBoxContainer/HBoxContainer2"]
+[node name="ProgressBar" type="ProgressBar" parent="UI/BotBar/HBoxContainer2"]
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -255,16 +259,16 @@ theme = ExtResource("8_5125l")
 value = 50.0
 show_percentage = false
 
-[node name="HPText" type="Label" parent="UI/VBoxContainer/HBoxContainer2/ProgressBar"]
+[node name="HPText" type="Label" parent="UI/BotBar/HBoxContainer2/ProgressBar"]
 layout_mode = 2
 offset_right = 142.0
 offset_bottom = 23.0
 text = "HP"
 
 [connection signal="input_event" from="InputPlane" to="Player" method="input_plane_event"]
-[connection signal="toggled" from="UI/VBoxContainer/Buttons/Tongue" to="UI/VBoxContainer/Buttons/Tongue" method="_on_toggled"]
-[connection signal="toggled" from="UI/VBoxContainer/Buttons/Shovel" to="UI/VBoxContainer/Buttons/Shovel" method="_on_toggled"]
-[connection signal="toggled" from="UI/VBoxContainer/Buttons/Sapphire" to="UI/VBoxContainer/Buttons/Sapphire" method="_on_toggled"]
+[connection signal="toggled" from="UI/BotBar/Buttons/Tongue" to="UI/BotBar/Buttons/Tongue" method="_on_toggled"]
+[connection signal="toggled" from="UI/BotBar/Buttons/Shovel" to="UI/BotBar/Buttons/Shovel" method="_on_toggled"]
+[connection signal="toggled" from="UI/BotBar/Buttons/Sapphire" to="UI/BotBar/Buttons/Sapphire" method="_on_toggled"]
 
 [editable path="DirtMover"]
 [editable path="MapBuilder"]

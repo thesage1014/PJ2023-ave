@@ -13,6 +13,7 @@ func _ready():
 	attackStrength = level*1.25
 	jumpCooldown = 2.5 - level*.2
 	roll_strength = .02 + level*.02
+	health = level
 
 func _physics_process(delta):
 	if target:
